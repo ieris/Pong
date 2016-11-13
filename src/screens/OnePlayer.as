@@ -1,10 +1,12 @@
 package screens
 {
-	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.text.TextField;
+	import starling.events.KeyboardEvent;
+	import flash.text.TextFormat;
+	import flash.ui.Keyboard;
 	
 	public class OnePlayer extends Sprite
 	{	
@@ -18,40 +20,41 @@ package screens
 		private var counter:Number = 1;
 		
 		//Screen variables
-		static var half_Stage_Height = stage.stageHeight/2;
-		static var half_Stage_Width = stage.stageWidth/2;
+		//private var half_Stage_Height:Number = (stage.stageHeight)/2;
+		//private var half_Stage_Width:Number = stage.stageWidth/2;
 		
 		//Here we have all of the player properties
-		private var playerSpeed:Number = 4;
-		private var player_velocity = 0;
+		private var playerSpeed:int = 4;
+		private var player_velocity:int = 0;
 		public var playerScore:int = 0;
-		static var half_Player_Height = player.height/2;
-		static var half_Player_Width = player.width/2;
+		//private var half_Player_Height:Number = player.height/2;
+		//private var half_Player_Width:Number = player.width/2;
 		
 		
 		//Here we have all of the PC properties
-		private var pcSpeed:Number = 4;
-		private var pc_velocity = 0;
+		private var pcSpeed:int = 4;
+		private var pc_velocity:int = 0;
 		public var pcScore:int = 0;
-		static var half_PC_Height = pc.height/2;
-		static var half_PC_Width = pc.width/2;
+		//private var half_PC_Height:Number = pc.height/2;
+		//private var half_PC_Width:Number = pc.width/2;
 		
 		//Here we have all of the ball properties
 		private var ballSpeedX:int = -3;
 		private var ballSpeedY:int = -2;
-		private var ball_xVelocity = -ballSppeed;
-		private var ball_yVelocity = ballSppeed;
-		static var half_Ball_Height = ball.height/2;
-		static var half_Ball_Width = ball.width/2;
+		private var ball_xVelocity:int = -ballSpeedX;
+		private var ball_yVelocity:int = ballSpeedY;
+		//private var half_Ball_Height:Number = ball.height/2;
+		//private var half_Ball_Width:Number = ball.width/2;
 		
 		//Here are the score variables
-		public var txt:TextField;
+		public var playerTxt:TextField;
+		public var pcTxt:TextField;
 		
 		//Here we initialize all of the event listeners
 		public function OnePlayer()
 		{
 			super();			
-			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
+			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
 			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			this.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			this.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
@@ -61,7 +64,7 @@ package screens
 		private function gameOver():void
 		{
 			this.removeEventListener(Event.ENTER_FRAME, gameOver);
-			this.removeEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
+			this.removeEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
 			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 			this.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			this.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
@@ -83,23 +86,21 @@ package screens
 			player.x = 0;
 			player.y = 0;
 			this.addChild(player);
-			this.addEventListener(Event.ENTER_FRAME, playerMove);
 			
 			ball = new Image(Assets.getTexture("ball"));
 			ball.x = 0;
 			ball.y = 0;
 			this.addChild(ball);
-			this.addEventListener(Event.ENTER_FRAME, ballMove);
 			
 			//This is where we have our scores
 			
-			playerScoreText = new TextField(10, 200, "Arial");
-			playerScoreText.text = (playerScoreText);
-			this.addChild(playerScoreText);
+			playerTxt = new TextField(10, 200, "Arial");
+			playerTxt.text = String(playerTxt);
+			this.addChild(playerTxt);
 			
-			pcScoreText = new TextField(10, 200, "Arial");
-			pcScoreText.text = String(pcScoreText);
-			this.addChild(pcScoreText);
+			pcTxt = new TextField(10, 200, "Arial");
+			pcTxt.text = String(pcTxt);
+			this.addChild(pcTxt);
 			
 			var format:TextFormat = new TextFormat();
 			format.font = "Arial";
@@ -113,35 +114,35 @@ package screens
 			player.y += player_velocity;
 			
 			//Restricting the player from moving beyond the screen
-			if(player.y - half_Player_Height <= 0)
+			if(player.y - player.height/2 <= 0)
 			{
-				player.y = half_Player_Height;
+				player.y = player.height/2;
 			}
-			else if(player.y + half_Player_Height >= stage.stageHeight)
+			else if(player.y + player.height/2 >= stage.stageHeight)
 			{
-				player.y = stage.stageHeight - half_Player_Height;
+				player.y = stage.stageHeight - player.height/2;
 			}
 			
 			//Moving the pc around the screen
-			if(pc.y half_PC_Height +  < ball.y)
+			if(pc.y + pc.height/2  < ball.y)
 			{
-				pcVelocity = -ballSpeed;
+				pc_velocity = -pcSpeed;
 			}
 			else
 			{
-				pcVelocity = ballSpeed;
+				pc_velocity = pcSpeed;
 			}
 			
-			pc.y += pcVelocity;
+			pc.y += pc_velocity;
 			
 			//Restricting the pc from moving beyond the screen
-			if(pc.y - half_PC_Height <= 0)
+			if(pc.y - pc.height/2 <= 0)
 			{
-				pc.y = half_PC_Height;
+				pc.y = pc.height/2;
 			}
-			else if(pc.y + half_PC_Height >= stage.stageHeight)
+			else if(pc.y + pc.height/2 >= stage.stageHeight)
 			{
-				pc.y = stage.stageHeight - half_PC_Height;
+				pc.y = stage.stageHeight - pc.height/2;
 			}
 			
 			//Moving the ball around the scene
@@ -151,38 +152,38 @@ package screens
 			//COLLISION
 			
 			//Collision between player and ball
-			if (ball.x - half_Ball_Width <= player.x + half_Player_Width)
+			if (ball.x - ball.width/2 <= player.x + player.height/2)
 			{
 				ball_xVelocity *= -1;
 				ball_yVelocity *= -1;
 			}
 				//Collision between pc and ball
-			else if (ball.x + half_Ball_Width >= pc.x + half_PC_Width)
+			else if (ball.x + ball.width/2 >= pc.x + player.width/2)
 			{
 				ball_xVelocity *= -1;
 				ball_yVelocity *= -1;
 			}
 				//Collision between ball and vertical walls
-			else if(ball.x - half_Ball_Width <= 0)
+			else if(ball.x - ball.width/2 <= 0)
 			{
 				pcScore += 1;
-				pcScoreText.text = String(pcScore);
+				pcTxt.text = String(pcScore);
 				resetGame();
 			}
-			else if (ball.x + half_Ball_Width >= stage.stageWidth)
+			else if (ball.x + ball.width/2 >= stage.stageWidth)
 			{
 				playerScore += 1;
-				playerScoreText.text = String(playerScore);
+				playerTxt.text = String(playerScore);
 				resetGame();
 			}
 				//Collision between ball and horizontal walls
-			else if(ball.y - half_Ball_Height <= 0)
+			else if(ball.y - ball.height/2 <= 0)
 			{
 				//Rebound ball from top wall
 				ball_xVelocity *= -1;
 				ball_yVelocity *= -1;
 			}
-			else if (ball.y + half_Ball_Height >= stage.stageHeight)
+			else if (ball.y + ball.height/2 >= stage.stageHeight)
 			{
 				//Rebound ball from bottom wall
 				ball_xVelocity *= -1;
@@ -193,25 +194,25 @@ package screens
 		private function onKeyPress(event:KeyboardEvent):void
 		{
 			//Then we listen out for keyboard commands and move the paddle accordingly
-			if(event.Keycode == Keyboard.W || event.Keycode == Keyboard.UP)
+			if(event.keyCode == Keyboard.W || event.keyCode == Keyboard.UP)
 			{
-				playerVelocity = -playerSpeed;
+				player_velocity = -playerSpeed;
 			}
-			else if(event.Keycode == Keyboard.S || event.Keycode == Keyboard.DOWN)
+			else if(event.keyCode == Keyboard.S || event.keyCode == Keyboard.DOWN)
 			{
-				playerVelocity = playerSpeed;
+				player_velocity = playerSpeed;
 			}
-			else if(event.Keycode == Keyboard.SPACE)
+			else if(event.keyCode == Keyboard.SPACE)
 			{
-				releaseBall();
+				releaseBall_Player();
 			}
 		}
 		
 		private function onKeyRelease(event:KeyboardEvent):void 
 		{
-			if(event.Keycode == Keyboard.W || event.Keycode == Keyboard.UP || event.Keycode == Keyboard.S || event.Keycode == Keyboard.DOWN)
+			if(event.keyCode == Keyboard.W || event.keyCode == Keyboard.UP || event.keyCode == Keyboard.S || event.keyCode == Keyboard.DOWN)
 			{
-				playerVelocity = 0;
+				player_velocity = 0;
 			}
 		}
 		
@@ -229,10 +230,10 @@ package screens
 		
 		private function resetGame():void
 		{
-			pc.y = half_Stage_Height;
-			player.y = half_Stage_Height;
-			ball.x = half_Stage_Width;
-			ball.y = half_Stage_Height;
+			pc.y = (stage.stageHeight)/2;
+			player.y = (stage.stageHeight)/2;
+			ball.x = (stage.stageWidth)/2;
+			ball.y = (stage.stageHeight)/2;
 		}
 		
 		//Dispose function
@@ -247,3 +248,4 @@ package screens
 			this.visible = true;
 		}
 	}
+}

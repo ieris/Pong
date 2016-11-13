@@ -4,73 +4,28 @@ package
 	import flash.utils.Dictionary;
 	
 	import starling.textures.Texture;
-	//import starling.textures.TextureAtlas;
+	import starling.textures.TextureAtlas;
 	
 	public class Assets
 	{
-		// In game screen
+		// One Player / Two Player screen
 		
 		[Embed(source="../Assets/ball.png")]
-		public static var Ball:Class;
+		public static const Ball:Class;
 		
 		[Embed(source="../Assets/gameLogo.png")]
-		public static var GameLogo:Class;
+		public static const GameLogo:Class;
 		
 		[Embed(source="../Assets/playerOne.png")]
-		public static var PlayerOne:Class;
+		public static const PlayerOne:Class;
 		
 		[Embed(source="../Assets/playerTwo.png")]
-		public static var PlayerTwo:Class;
+		public static const PlayerTwo:Class;
 		
 		[Embed(source="../Assets/screenBackground.jpg")]
-		public static var ScreenBackground:Class;
-		
-		//public static var UpgradeTable:Class;
-		
+		public static const ScreenBackground:Class;
 		
 		private static var gameTextures:Dictionary = new Dictionary();
-		/*private static var gameTextureAtlas:TextureAtlas;
-		private static var gameTextures2:Dictionary = new Dictionary();
-		private static var gameTextureAtlas2:TextureAtlas;
-		*/
-		
-		//Fire ball
-		
-		/*[Embed(source="../Media of Fire Run/fireBall/Sprite Sheet/mySpritesheet.png")]
-		public static const AtlasTextureGame:Class;
-		
-		[Embed(source = "../Media of Fire Run/fireBall/Sprite Sheet/mySpritesheet.xml", mimeType="application/octet-stream")]
-		public static const AtlasXmlGame:Class;
-		
-		[Embed(source="../Media of Fire Run/Sprites/oSprite.png")]
-		public static const AtlasTextureObstacles:Class;
-		
-		[Embed(source = "../Media of Fire Run/Sprites/oSprite.xml", mimeType="application/octet-stream")]
-		public static const AtlasXmlObstacles:Class;
-		*/
-		
-		/*public static function getAtlas():TextureAtlas
-		{
-			if (gameTextureAtlas == null)
-			{
-				var texture:Texture = getTexture("AtlasTextureGame");
-				var xml:XML = XML(new AtlasXmlGame());
-				gameTextureAtlas = new TextureAtlas(texture, xml);
-			}
-			return gameTextureAtlas;
-		}
-		
-		public static function getAtlas2():TextureAtlas
-		{
-			if (gameTextureAtlas2 == null)
-			{
-				var textureO:Texture = getTexture("AtlasTextureObstacles");
-				var xmlO:XML = XML(new AtlasXmlObstacles());
-				gameTextureAtlas2 = new TextureAtlas(textureO, xmlO);
-			}
-			return gameTextureAtlas2;
-		}
-		*/
 		
 		public static function getTexture(name:String):Texture
 		{
