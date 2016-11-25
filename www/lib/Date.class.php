@@ -10,6 +10,28 @@ class Date {
 	public function getTime() {
 		return $this->__t * 1000;
 	}
+	public function getFullYear() {
+		return intval(date("Y", $this->__t));
+	}
+	public function getMonth() {
+		$m = intval(date("n", $this->__t));
+		return -1 + $m;
+	}
+	public function getDate() {
+		return intval(date("j", $this->__t));
+	}
+	public function getHours() {
+		return intval(date("G", $this->__t));
+	}
+	public function getMinutes() {
+		return intval(date("i", $this->__t));
+	}
+	public function getSeconds() {
+		return intval(date("s", $this->__t));
+	}
+	public function toString() {
+		return date("Y-m-d H:i:s", $this->__t);
+	}
 	public function __call($m, $a) {
 		if(isset($this->$m) && is_callable($this->$m))
 			return call_user_func_array($this->$m, $a);
@@ -38,5 +60,5 @@ class Date {
 		$tmp = strtotime($s);
 		return Date::fromPhpTime($tmp);
 	}
-	function __toString() { return 'Date'; }
+	function __toString() { return $this->toString(); }
 }

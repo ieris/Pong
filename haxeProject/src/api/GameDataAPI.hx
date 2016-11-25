@@ -1,9 +1,10 @@
 package api;
 import db.GameData;
-import db.Tables;
+import db.Table;
 import haxe.Json;
 import php.Lib;
 import php.Web;
+import sys.db.Types.SDateTime;
 import sys.io.File;
 
 /**
@@ -11,32 +12,42 @@ import sys.io.File;
  * @author Andrew Finlay
  */
 
-class GameDataAPI {
-
-	public function new() {
+class GameDataAPI 
+{
+	public function new() 
+	{
 		
 	}
 	
-	public function addData() {
+	public static function convertToSQLDateTime(h_date:Date):SDateTime 
+	{
+		var t_date:String;
 		
+		t_date = h_date.getFullYear() + "-" + (h_date.getMonth() + 1) + "-" + h_date.getDate() + " " + h_date.getHours() + ":" + h_date.getMinutes() + ":" + h_date.getSeconds();
+ 
+		return cast(t_date, SDateTime);
+	}
+	
+	public function addData() 
+	{
 		var filePath = "C:\\University\\301CR - Advanced Games Programming\\Assignment 2\\Leaderboard\\Leaderboard\\src\\gameData.json";
 		var value = File.getContent(filePath);
 		var json = Json.parse(value);
-	//	Lib.print("Username: " + json.Username + "<br>" + "Country: " + json.Country + "<br>" + "Scored: " + json.Scored + "<br>" + "Conceeded: " + json.Conceeded);
 		
 		var gameData = new GameData();
-	
+		
 		gameData.username = json.Username;
 		gameData.countryA2 = json.Country;
 		gameData.scoreFor = json.Scored;
 		gameData.scoreAgainst = json.Conceeded;
 		gameData.scoreDifference = gameData.scoreFor - gameData.scoreAgainst;
-		
-		Tables.connect();
+		gameData.ts = convertToSQLDateTime(Date.now());
+		//gameData.ts = convertToSQLDateTime(new Date(2015, 7, 21, 13, 24, 1));
+	
+		Table.connect();
 		gameData.insert();
-		Tables.disconnect();
+		Table.disconnect();
 		
 		Lib.print("<h2>Added data</h2>");
 	}
-	
 }

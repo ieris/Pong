@@ -12,10 +12,10 @@ class Main {
 		$d = new haxe_web_Dispatch($tmp, $tmp1);
 		$len = $d->parts->length;
 		$tmp2 = $d->parts[$len - 1];
-		if($tmp2 === "createTables") {
-			db_Tables::connect();
-			db_Tables::createTables();
-			db_Tables::disconnect();
+		if($tmp2 === "createTable") {
+			db_Table::connect();
+			db_Table::createTable();
+			db_Table::disconnect();
 		} else {
 			$tmp3 = $d->parts[$len - 1];
 			if($tmp3 === "addData") {
@@ -27,7 +27,7 @@ class Main {
 				} else {
 					$tmp5 = $d->parts[$len - 1];
 					if($tmp5 === "displayLeaderboard") {
-						db_Tables::displayLeaderboard();
+						db_Table::displayLeaderboard();
 					} else {
 						php_Lib::hprint("<h2>You requested something else</h2>");
 					}
