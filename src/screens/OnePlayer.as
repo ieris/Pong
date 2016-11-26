@@ -117,17 +117,17 @@ package screens
 		private function collision(event:Event):void
 		{
 			//Restricting the pc from moving beyond the screen
-			if(pc.y - pc.height/2 <= 0)
+			if(pc.y <= 0)
 			{
-				pc.y = pc.height/2;
+				pc.y = 0;
 			}
-			else if(pc.y - pc.height/2 >= stage.stageHeight)
+			else if(pc.y >= stage.stageHeight - pc.height)
 			{
-				pc.y = stage.stageHeight - pc.height/2;
+				pc.y = stage.stageHeight - pc.height;
 			}
-			
+
 			//Restricting the player from moving beyond the screen
-			if(player.y - player.height >= stage.stageHeight - player.height)
+			if(player.y >= stage.stageHeight - player.height)
 			{
 				player.y = stage.stageHeight - player.height;
 			}
@@ -140,7 +140,7 @@ package screens
 			
 			//Ball collision with the edge of the screen
 			// >
-			if (ball.x >= stage.stageWidth - ball.width/2)
+			if (ball.x + ball.width/2 >= stage.stageWidth)
 			{
 				ball_xVelocity *= -1;
 				playerScore += 1;		
@@ -157,22 +157,21 @@ package screens
 				ball_yVelocity *= -1;
 			}
 			// v
-			else if (ball.y >= stage.stageHeight - ball.height)
+			else if (ball.y + ball.height >= stage.stageHeight)
 			{
 				ball_yVelocity *= -1;
 			}
 			
 			//Ball collision with the pc paddles
-			if ((ball.x - ball.width/2 >= pc.x || ball.x - ball.width/2 <= pc.x) && (ball.y <= pc.y && ball.y >= pc.y - pc.height - ball.height))
+			if ((ball.x + ball.width >= pc.x && ball.x <= pc.x + pc.width) && (ball.y >= pc.y && ball.y + ball.height <= pc.y - pc.height))
 			{
 				ball_xVelocity *= -1;
-				ball_yVelocity *= -1;
 			}
-			else if ((ball.x - ball.width/2 >= player.x || ball.x - ball.width/2 <= player.x) && (ball.y <= player.y && ball.y >= player.y - player.height - ball.height))
+			//Ball collision with the player paddles
+			else if ((ball.x + ball.width/2 <= player.x + player.width && ball.x + ball.width >= player.x) && (ball.y <= player.y && ball.y >= player.y - player.height))
 			{
 				ball_xVelocity *= -1;
-				ball_yVelocity *= -1;
-			}			
+			}
 		}
 		
 		private function onEnterFrame(event:Event):void
