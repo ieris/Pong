@@ -39,8 +39,8 @@ package screens
 		//private var half_PC_Width:Number = pc.width/2;
 		
 		//Here we have all of the ball properties
-		private var ballSpeedX:int = -3;
-		private var ballSpeedY:int = -2;
+		private var ballSpeedX:int = -6;
+		private var ballSpeedY:int = -4;
 		private var ball_xVelocity:int = -ballSpeedX;
 		private var ball_yVelocity:int = ballSpeedY;
 		//private var half_Ball_Height:Number = ball.height/2;
@@ -116,6 +116,7 @@ package screens
 		
 		private function collision(event:Event):void
 		{
+			
 			//Restricting the pc from moving beyond the screen
 			if(pc.y <= 0)
 			{
@@ -140,36 +141,37 @@ package screens
 			
 			//Ball collision with the edge of the screen
 			// >
-			if (ball.x + ball.width/2 >= stage.stageWidth)
+			if (ball.x + ball.width >= stage.stageWidth)
 			{
 				ball_xVelocity *= -1;
 				playerScore += 1;		
 			}
 			// <
-			else if (ball.x + ball.width/2 <= 0)
+			else if (ball.x <= 0)
 			{
 				ball_xVelocity *= -1;
 				pcScore += 1;
 			}
 			// ^
-			else if (ball.y + ball.height/2 <= 0)
+			else if (ball.y <= 0)
 			{
 				ball_yVelocity *= -1;
 			}
 			// v
-			else if (ball.y + ball.height >= stage.stageHeight)
+			else if (ball.y + ball.height + ball.height >= stage.stageHeight)
 			{
 				ball_yVelocity *= -1;
 			}
 			
 			//Ball collision with the pc paddles
-			if ((ball.x + ball.width >= pc.x && ball.x <= pc.x + pc.width) && (ball.y >= pc.y && ball.y + ball.height <= pc.y - pc.height))
+			else if ((ball.x + ball.width >= pc.x && ball.y >= pc.y && ball.y + ball.height <= pc.y + pc.height))
 			{
 				ball_xVelocity *= -1;
 			}
 			//Ball collision with the player paddles
-			else if ((ball.x + ball.width/2 <= player.x + player.width && ball.x + ball.width >= player.x) && (ball.y <= player.y && ball.y >= player.y - player.height))
+			else if ((ball.x <= player.x + player.width && ball.y >= player.y && ball.y + ball.height <= player.y + player.height))
 			{
+				trace("collide");
 				ball_xVelocity *= -1;
 			}
 		}
@@ -177,30 +179,24 @@ package screens
 		private function onEnterFrame(event:Event):void
 		{
 			//Moving the player
-			player.y += player_velocity;
-			
-			
+			player.y += player_velocity;	
 			
 			//Moving the pc around the screen
-			/*if(pc.y + pc.height/2  < ball.y)
-			{
-				pc_velocity = -pcSpeed;
-			}
-			else
+			if(pc.y + pc.height/2 < ball.y + ball.height/2)
 			{
 				pc_velocity = pcSpeed;
 			}
+			else
+			{
+				pc_velocity = -pcSpeed;
+			}
 			
 			pc.y += pc_velocity;
-			*/
-			
-			
 			
 			//Moving the ball around the scene
 			ball.x -= ball_xVelocity;
 			ball.y -= ball_yVelocity;
-			
-			
+				
 		}
 		
 		private function onKeyPress(event:KeyboardEvent):void
@@ -222,7 +218,7 @@ package screens
 		
 		private function onKeyRelease(event:KeyboardEvent):void 
 		{
-			if(event.keyCode == Keyboard.W || event.keyCode == Keyboard.UP || event.keyCode == Keyboard.S || event.keyCode == Keyboard.DOWN)
+			if(event.keyCode == Keyboard.W || event.keyCode == Keyboard.S || event.keyCode == Keyboard.UP || event.keyCode == Keyboard.DOWN)
 			{
 				player_velocity = 0;
 			}
