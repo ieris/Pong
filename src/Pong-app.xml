@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<application xmlns="http://ns.adobe.com/air/application/3.4">
+<application xmlns="http://ns.adobe.com/air/application/23.0">
 
 <!-- Adobe AIR Application Descriptor File Template.
 
 	Specifies parameters for identifying, installing, and launching AIR applications.
 
-	xmlns - The Adobe AIR namespace: http://ns.adobe.com/air/application/3.4
+	xmlns - The Adobe AIR namespace: http://ns.adobe.com/air/application/23.0
 			The last segment of the namespace specifies the version 
 			of the AIR runtime required for this application to run.
 			
@@ -15,7 +15,7 @@
 
 	<!-- A universally unique application identifier. Must be unique across all AIR applications.
 	Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
-	<id>Pong</id>
+	<id>com.iveta.Pong</id>
 
 	<!-- Used as the filename for the application. Required. -->
 	<filename>Pong</filename>
@@ -70,10 +70,10 @@
 		<!-- <resizable></resizable> -->
 
 		<!-- The window's initial width in pixels. Optional. -->
-		<!-- <width></width> -->
+		<width>3440</width>
 
 		<!-- The window's initial height in pixels. Optional. -->
-		<!-- <height></height> -->
+		<height>1440</height>
 
 		<!-- The window's initial x position. Optional. -->
 		<!-- <x></x> -->

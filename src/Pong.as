@@ -10,7 +10,7 @@ package
 	
 	import starling.core.Starling;
 	
-	[SWF(frameRate="60", width="1920", height="1200", backgroundColor="0xF3333")]
+	[SWF(frameRate="60", backgroundColor="#006666")]
 	public class Pong extends Sprite
 	{
 		
@@ -31,15 +31,12 @@ package
 			
 			
 			myStarling = new Starling(Game, stage, new Rectangle(0,0, screenWidth, screenHeight));
-			
 			myStarling.start();
-			myStarling.stage.stageWidth = 1920;
-			myStarling.stage.stageHeight = 1200;
 			
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
 			stats = new Stats();
-			this.addChild(stats);
+			//this.addChild(stats);
 			
 			
 			myStarling.antiAliasing =1;

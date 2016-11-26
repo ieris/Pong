@@ -31,11 +31,10 @@ package
 			
 			this.addEventListener(events.NavigationEvent.CHANGE_SCREEN, onChangeScreen);
 			
-			//screenOnePlayer = new OnePlayer();
-			
-			//screenTwoPlayer = new TwoPlayer();
-			//screenLeaderboard = new Leaderboard();
-			//screenOptions = new Options();
+			screenOnePlayer = new OnePlayer();
+			screenTwoPlayer = new TwoPlayer();
+			screenLeaderboard = new Leaderboard();
+			screenOptions = new Options();
 			//screenInGame.disposeTemporarily();
 			//this.addChild(screenInGame);
 			

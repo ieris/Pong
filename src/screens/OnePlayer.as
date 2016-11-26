@@ -11,7 +11,7 @@ package screens
 	public class OnePlayer extends Sprite
 	{	
 		//Here we have all the images
-		private var sceneBackground:Image;
+		private var gameBG:Image;
 		private var player:Image;
 		private var pc:Image;
 		private var ball:Image;
@@ -56,6 +56,7 @@ package screens
 			super();			
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
 			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			this.addEventListener(Event.ENTER_FRAME, collision);
 			this.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			this.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 		}
@@ -77,24 +78,29 @@ package screens
 		//Draw assets function
 		private function drawGame():void
 		{				
-			sceneBackground = new Image(Assets.getTexture("sceneBackground"));
-			sceneBackground.x = 0;
-			sceneBackground.y = 0;
-			this.addChild(sceneBackground);
-			
-			player = new Image(Assets.getTexture("playerOne"));
-			player.x = 0;
-			player.y = 0;
+			/*gameBG = new Image(Assets.getTexture("GameBG"));
+			gameBG.x = 0;
+			gameBG.y = 0;
+			this.addChild(gameBG);
+			*/
+			player = new Image(Assets.getTexture("PlayerOne"));
+			player.x = player.width;
+			player.y = stage.stageHeight/2;
 			this.addChild(player);
 			
-			ball = new Image(Assets.getTexture("ball"));
-			ball.x = 0;
-			ball.y = 0;
+			pc = new Image(Assets.getTexture("PlayerTwo"));
+			pc.x = stage.stageWidth - (2*pc.width);
+			pc.y = stage.stageHeight/2;
+			this.addChild(pc);
+			
+			ball = new Image(Assets.getTexture("Ball"));
+			ball.x = stage.stageWidth/2;
+			ball.y = stage.stageHeight/2;
 			this.addChild(ball);
 			
 			//This is where we have our scores
 			
-			playerTxt = new TextField(10, 200, "Arial");
+			/*playerTxt = new TextField(10, 200, "Arial");
 			playerTxt.text = String(playerTxt);
 			this.addChild(playerTxt);
 			
@@ -105,7 +111,68 @@ package screens
 			var format:TextFormat = new TextFormat();
 			format.font = "Arial";
 			format.color = 0xFF0000;
-			format.size = 10;
+			format.size = 10;*/
+		}
+		
+		private function collision(event:Event):void
+		{
+			//Restricting the pc from moving beyond the screen
+			if(pc.y - pc.height/2 <= 0)
+			{
+				pc.y = pc.height/2;
+			}
+			else if(pc.y - pc.height/2 >= stage.stageHeight)
+			{
+				pc.y = stage.stageHeight - pc.height/2;
+			}
+			
+			//Restricting the player from moving beyond the screen
+			if(player.y - player.height >= stage.stageHeight - player.height)
+			{
+				player.y = stage.stageHeight - player.height;
+			}
+			else if(player.y <= 0)
+			{
+				player.y = 0;
+			}
+			
+			//COLLISION
+			
+			//Ball collision with the edge of the screen
+			// >
+			if (ball.x >= stage.stageWidth - ball.width/2)
+			{
+				ball_xVelocity *= -1;
+				playerScore += 1;		
+			}
+			// <
+			else if (ball.x + ball.width/2 <= 0)
+			{
+				ball_xVelocity *= -1;
+				pcScore += 1;
+			}
+			// ^
+			else if (ball.y + ball.height/2 <= 0)
+			{
+				ball_yVelocity *= -1;
+			}
+			// v
+			else if (ball.y >= stage.stageHeight - ball.height)
+			{
+				ball_yVelocity *= -1;
+			}
+			
+			//Ball collision with the pc paddles
+			if ((ball.x - ball.width/2 >= pc.x || ball.x - ball.width/2 <= pc.x) && (ball.y <= pc.y && ball.y >= pc.y - pc.height - ball.height))
+			{
+				ball_xVelocity *= -1;
+				ball_yVelocity *= -1;
+			}
+			else if ((ball.x - ball.width/2 >= player.x || ball.x - ball.width/2 <= player.x) && (ball.y <= player.y && ball.y >= player.y - player.height - ball.height))
+			{
+				ball_xVelocity *= -1;
+				ball_yVelocity *= -1;
+			}			
 		}
 		
 		private function onEnterFrame(event:Event):void
@@ -113,18 +180,10 @@ package screens
 			//Moving the player
 			player.y += player_velocity;
 			
-			//Restricting the player from moving beyond the screen
-			if(player.y - player.height/2 <= 0)
-			{
-				player.y = player.height/2;
-			}
-			else if(player.y + player.height/2 >= stage.stageHeight)
-			{
-				player.y = stage.stageHeight - player.height/2;
-			}
+			
 			
 			//Moving the pc around the screen
-			if(pc.y + pc.height/2  < ball.y)
+			/*if(pc.y + pc.height/2  < ball.y)
 			{
 				pc_velocity = -pcSpeed;
 			}
@@ -134,61 +193,15 @@ package screens
 			}
 			
 			pc.y += pc_velocity;
+			*/
 			
-			//Restricting the pc from moving beyond the screen
-			if(pc.y - pc.height/2 <= 0)
-			{
-				pc.y = pc.height/2;
-			}
-			else if(pc.y + pc.height/2 >= stage.stageHeight)
-			{
-				pc.y = stage.stageHeight - pc.height/2;
-			}
+			
 			
 			//Moving the ball around the scene
-			ball.x += ball_xVelocity;
-			ball.y += ball_yVelocity;
+			ball.x -= ball_xVelocity;
+			ball.y -= ball_yVelocity;
 			
-			//COLLISION
 			
-			//Collision between player and ball
-			if (ball.x - ball.width/2 <= player.x + player.height/2)
-			{
-				ball_xVelocity *= -1;
-				ball_yVelocity *= -1;
-			}
-				//Collision between pc and ball
-			else if (ball.x + ball.width/2 >= pc.x + player.width/2)
-			{
-				ball_xVelocity *= -1;
-				ball_yVelocity *= -1;
-			}
-				//Collision between ball and vertical walls
-			else if(ball.x - ball.width/2 <= 0)
-			{
-				pcScore += 1;
-				pcTxt.text = String(pcScore);
-				resetGame();
-			}
-			else if (ball.x + ball.width/2 >= stage.stageWidth)
-			{
-				playerScore += 1;
-				playerTxt.text = String(playerScore);
-				resetGame();
-			}
-				//Collision between ball and horizontal walls
-			else if(ball.y - ball.height/2 <= 0)
-			{
-				//Rebound ball from top wall
-				ball_xVelocity *= -1;
-				ball_yVelocity *= -1;
-			}
-			else if (ball.y + ball.height/2 >= stage.stageHeight)
-			{
-				//Rebound ball from bottom wall
-				ball_xVelocity *= -1;
-				ball_yVelocity *= -1;
-			}
 		}
 		
 		private function onKeyPress(event:KeyboardEvent):void
@@ -230,10 +243,8 @@ package screens
 		
 		private function resetGame():void
 		{
-			pc.y = (stage.stageHeight)/2;
-			player.y = (stage.stageHeight)/2;
-			ball.x = (stage.stageWidth)/2;
-			ball.y = (stage.stageHeight)/2;
+			ball.x = 350;
+			ball.y = 100;
 		}
 		
 		//Dispose function

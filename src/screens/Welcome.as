@@ -8,7 +8,8 @@ package screens
 	
 	public class Welcome extends Sprite
 	{		
-		private var gameLogo:Image;
+		private var welcomeBG:Image;
+		private var ballSelector:Image;
 		private var onePlayerButton:Button;
 		private var twoPlayerButton:Button;
 		private var optionsButton:Button;
@@ -31,35 +32,35 @@ package screens
 		
 		private function drawScreen():void
 		{		
-			gameLogo = new Image(Assets.getTexture("gameLogo"));
-			gameLogo.x = 0;
-			gameLogo.y = 0;
-			this.addChild(gameLogo);
-
-			/*onePlayerButton = new Button(Assets.getTexture("onePlayerButton"));
-			onePlayerButton.x = 0;
-			onePlayerButton.y = 140;
-			onePlayerButton.downState = Assets.getTexture("onePlayerButton");
+			onePlayerButton = new Button(Assets.getTexture("OnePlayerButton"));
+			onePlayerButton.x = stage.stageWidth/2 - onePlayerButton.width/2;
+			onePlayerButton.y = stage.stageHeight/2 - onePlayerButton.height - 20;
+			onePlayerButton.downState = Assets.getTexture("OnePlayerButton");
 			this.addChild(onePlayerButton);
 			this.addEventListener(Event.TRIGGERED, onButtonClick);
 			
-			twoPlayerButton = new Button(Assets.getTexture("twoPlayerButton"));
-			twoPlayerButton.x = 0;
-			twoPlayerButton.y = 140;
-			twoPlayerButton.downState = Assets.getTexture("twoPlayerButton");
+			twoPlayerButton = new Button(Assets.getTexture("TwoPlayerButton"));
+			twoPlayerButton.x = stage.stageWidth/2 - onePlayerButton.width/2;
+			twoPlayerButton.y = stage.stageHeight/2 - 10;
+			twoPlayerButton.downState = Assets.getTexture("TwoPlayerButton");
 			this.addChild(twoPlayerButton);
 			
-			leaderboardButton = new Button(Assets.getTexture("leaderboardButton"));
-			leaderboardButton.x = 0;
-			leaderboardButton.y = 140;
-			leaderboardButton.downState = Assets.getTexture("leaderboardButton");
+			leaderboardButton = new Button(Assets.getTexture("LeaderboardButton"));
+			leaderboardButton.x = stage.stageWidth/2 - onePlayerButton.width/2;
+			leaderboardButton.y = stage.stageHeight/2 + onePlayerButton.height;
+			leaderboardButton.downState = Assets.getTexture("LeaderboardButton");
 			this.addChild(leaderboardButton);
 			
-			optionsButton = new Button(Assets.getTexture("optionsButton"));
-			optionsButton.x = 0;
-			optionsButton.y = 140;
-			optionsButton.downState = Assets.getTexture("optionsButton");
-			this.addChild(optionsButton);*/
+			optionsButton = new Button(Assets.getTexture("OptionsButton"));
+			optionsButton.x = stage.stageWidth/2 - optionsButton.width/2
+			optionsButton.y = stage.stageHeight/2 + (onePlayerButton.height * 2 + 10);
+			optionsButton.downState = Assets.getTexture("OptionsButton");
+			this.addChild(optionsButton);
+			
+			ballSelector = new Image(Assets.getTexture("BallSelector"));
+			ballSelector.x = stage.stageWidth/2 - onePlayerButton.width/2 - ballSelector.width;
+			ballSelector.y = onePlayerButton.y - ballSelector.height/4;
+			this.addChild(ballSelector);
 		}
 		
 		public function onButtonClick(event:Event):void

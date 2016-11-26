@@ -4,6 +4,7 @@
     <compilerSourcePath>
       <compilerSourcePathEntry kind="1" linkType="1" path="C:/Users/Iveta/Desktop/Gamua-Starling-Framework-110c2a5/starling/src"/>
       <compilerSourcePathEntry kind="1" linkType="1" path="C:/Users/Iveta/Desktop/Hi-ReS-Stats-master/src"/>
+      <compilerSourcePathEntry kind="1" linkType="1" path="C:/Users/Iveta/Downloads/starling-2.1/starling/src/starling"/>
     </compilerSourcePath>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
