@@ -11,6 +11,8 @@ class Main {
 		$tmp1 = php_Web::getParams();
 		$d = new haxe_web_Dispatch($tmp, $tmp1);
 		$len = $d->parts->length;
+		$userInput = php_Web::getParams();
+		$userInputString = null;
 		$tmp2 = $d->parts[$len - 1];
 		if($tmp2 === "createTable") {
 			db_Table::connect();
@@ -22,14 +24,43 @@ class Main {
 				_hx_deref(new api_GameDataAPI())->addData();
 			} else {
 				$tmp4 = $d->parts[$len - 1];
-				if($tmp4 === "test") {
-					php_Lib::hprint("<h2>Testing connection</h2>");
+				if($tmp4 === "displayAll") {
+					api_DisplayAPI::displayAll();
 				} else {
 					$tmp5 = $d->parts[$len - 1];
-					if($tmp5 === "displayLeaderboard") {
-						db_Table::displayLeaderboard();
+					if($tmp5 === "displayTop10") {
+						api_DisplayAPI::displayTop10();
 					} else {
-						php_Lib::hprint("<h2>You requested something else</h2>");
+						$tmp6 = $d->parts[$len - 1];
+						if($tmp6 === "displayCountry") {
+							$userInputString = $userInput->get("country");
+							api_DisplayAPI::displayCountry($userInputString);
+						} else {
+							$tmp7 = $d->parts[$len - 1];
+							if($tmp7 === "displayYear") {
+								$userInputString = $userInput->get("year");
+								api_DisplayAPI::displayYear($userInputString);
+							} else {
+								$tmp8 = $d->parts[$len - 1];
+								if($tmp8 === "displayMonth") {
+									$userInputString = $userInput->get("month");
+									api_DisplayAPI::displayMonth($userInputString);
+								} else {
+									$tmp9 = $d->parts[$len - 1];
+									if($tmp9 === "displayWeek") {
+										api_DisplayAPI::displayWeek();
+									} else {
+										$tmp10 = $d->parts[$len - 1];
+										if($tmp10 === "displayDay") {
+											$userInputString = $userInput->get("day");
+											api_DisplayAPI::displayDay($userInputString);
+										} else {
+											php_Lib::hprint("<h2>You requested something else</h2>");
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}

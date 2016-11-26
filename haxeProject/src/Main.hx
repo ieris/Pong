@@ -1,5 +1,6 @@
 package;
 
+import api.DisplayAPI;
 import api.GameDataAPI;
 import db.Table;
 import haxe.web.Dispatch;
@@ -22,7 +23,8 @@ class Main
 	{
 		var d = new Dispatch(Web.getURI(), Web.getParams());
 		var len:Int = d.parts.length;
-		var i:Int = 0;
+		var userInput = Web.getParams();
+		var userInputString:String;
 		
 		if (d.parts[len - 1] == "createTable")
 		{
@@ -36,14 +38,43 @@ class Main
 			new GameDataAPI().addData();
 		}
 		
-		else if (d.parts[len - 1] == "test")
+		else if (d.parts[len - 1] == "displayAll")
 		{
-			Lib.print("<h2>Testing connection</h2>");
+			DisplayAPI.displayAll();
 		}
 		
-		else if (d.parts[len - 1] == "displayLeaderboard")
+		else if (d.parts[len - 1] == "displayTop10")
 		{
-			Table.displayLeaderboard();
+			DisplayAPI.displayTop10();
+		}
+		
+		else if (d.parts[len - 1] == "displayCountry")
+		{
+			userInputString = userInput.get("country");
+			DisplayAPI.displayCountry(userInputString);
+		}
+		
+		else if (d.parts[len - 1] == "displayYear")
+		{
+			userInputString = userInput.get("year");
+			DisplayAPI.displayYear(userInputString);
+		}
+		
+		else if (d.parts[len - 1] == "displayMonth")
+		{
+			userInputString = userInput.get("month");
+			DisplayAPI.displayMonth(userInputString);
+		}
+		
+		else if (d.parts[len - 1] == "displayWeek")
+		{
+			DisplayAPI.displayWeek();
+		}
+		
+		else if (d.parts[len - 1] == "displayDay")
+		{
+			userInputString = userInput.get("day");
+			DisplayAPI.displayDay(userInputString);
 		}
 		
 		else 

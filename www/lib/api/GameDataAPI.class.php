@@ -10,7 +10,7 @@ class api_GameDataAPI {
 		$gameData->username = $json->Username;
 		$gameData->countryA2 = $json->Country;
 		$gameData->scoreFor = $json->Scored;
-		$gameData->scoreAgainst = $json->Conceeded;
+		$gameData->scoreAgainst = $json->Conceded;
 		$gameData->scoreDifference = $gameData->scoreFor - $gameData->scoreAgainst;
 		$tmp = Date::now();
 		$gameData->ts = api_GameDataAPI::convertToSQLDateTime($tmp);

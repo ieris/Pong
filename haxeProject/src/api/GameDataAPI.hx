@@ -39,7 +39,7 @@ class GameDataAPI
 		gameData.username = json.Username;
 		gameData.countryA2 = json.Country;
 		gameData.scoreFor = json.Scored;
-		gameData.scoreAgainst = json.Conceeded;
+		gameData.scoreAgainst = json.Conceded;
 		gameData.scoreDifference = gameData.scoreFor - gameData.scoreAgainst;
 		gameData.ts = convertToSQLDateTime(Date.now());
 		//gameData.ts = convertToSQLDateTime(new Date(2015, 7, 21, 13, 24, 1));
