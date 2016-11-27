@@ -22,7 +22,7 @@ class api_DisplayAPI {
 	static function queryLeaderboard($query) {
 		$cnx = sys_db_Mysql::connect(_hx_anonymous(array("host" => "localhost", "port" => 3306, "user" => "root", "pass" => "", "database" => "leaderboard", "socket" => null)));
 		$req = $cnx->request($query);
-		php_Lib::hprint("<body>" . "<table border=1; cellpadding=4; cellspacing=0; style=border-collapse:collapse; bordercolor=f67ffff;>" . "<tr>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>RANK</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>USERNAME</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>COUNTRY</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>SCORE</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>TIMESTAMP</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>ID</font></th>");
+		php_Lib::hprint("<body>" . "<table cellpadding=4; cellspacing=0>" . "<tr>" . "<th><font color=white><a href='/displayAll'>" . "All" . "</a></font></th>" . "<th><font color=white><a href='/displayTop10'>" . "Top 10" . "</a></font></th>" . "<th><font color=white><select onChange='window.location.href=this.value'>" . "<option value=''>Country</option>" . "<option value='/displayCountry?country=GB'>GB</option>" . "<option value='displayCountry?country=IN'>IN</option>" . "<option value='displayCountry?country=IT'>IT</option>" . "<option value='displayCountry?country=LT'>LT</option>" . "</select></font></th>" . "<th><font color=white><select onChange='window.location.href=this.value'>" . "<option value=''>Year</option>" . "<option value='/displayYear?year=2016'>2016</option>" . "<option value='/displayYear?year=2015'>2015</option>" . "<option value='/displayYear?year=2014'>2014</option>" . "<option value='/displayYear?year=2013'>2013</option>" . "</select></font></th>" . "<th><font color=white><select onChange='window.location.href=this.value'>" . "<option value=''>Month</option>" . "<option value='/displayMonth?month=12'>12</option>" . "<option value='/displayMonth?month=11'>11</option>" . "<option value='/displayMonth?month=10'>10</option>" . "<option value='/displayMonth?month=9'>9</option>" . "</select></font></th>" . "<th><font color=white><a href='/displayWeek'>" . "This Week" . "</a></font></th>" . "<th><font color=white><a href='/displayDay?day=24'>" . "Today" . "</a></font></th>" . "</tr></table>" . "<table border=1; cellpadding=4; cellspacing=0; style=border-collapse:collapse; bordercolor=f67ffff>" . "<tr>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>RANK</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>USERNAME</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>COUNTRY</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>SCORE</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>TIMESTAMP</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>ID</font></th>");
 		$i = 1;
 		while(true) {
 			$tmp = !$req->hasNext();
@@ -64,14 +64,11 @@ class api_DisplayAPI {
 	}
 	static function displayWeek() {
 		$dateNow = Date::now();
-		$dateNow->getDate();
-		$dateNow->getDate();
-		$dateNow->getDate();
-		$dateNow->getDate();
-		$dateNow->getDate();
-		$dateNow->getDate();
-		$tmp = $dateNow->getDate();
-		$query = "SELECT * FROM gamedata WHERE ts LIKE '%-" . _hx_string_rec(($tmp - 1), "") . "%' ORDER by scoreDifference DESC LIMIT 10";
+		$tmp = $dateNow->getTime();
+		$tmp1 = Date::fromTime($tmp - 604800000)->toString();
+		$tmp2 = "SELECT * FROM gamedata WHERE ts BETWEEN '" . _hx_string_or_null($tmp1) . "' AND '";
+		$tmp3 = $dateNow->toString();
+		$query = _hx_string_or_null($tmp2) . _hx_string_or_null($tmp3) . "' ORDER by scoreDifference DESC LIMIT 10";
 		php_Lib::hprint($query);
 		api_DisplayAPI::queryLeaderboard($query);
 	}

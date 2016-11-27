@@ -42,7 +42,41 @@ class DisplayAPI
 		
 		Lib.print(
 		"<body>" +
-		"<table border=1; cellpadding=4; cellspacing=0; style=border-collapse:collapse; bordercolor=f67ffff;>" + 
+		"<table cellpadding=4; cellspacing=0>" +
+		"<tr>" +
+		"<th><font color=white><a href='/displayAll'>" + "All" + "</a></font></th>" +
+		"<th><font color=white><a href='/displayTop10'>" + "Top 10" + "</a></font></th>" +
+		
+		"<th><font color=white><select onChange='window.location.href=this.value'>" + 
+		"<option value=''>Country</option>" +
+		"<option value='/displayCountry?country=GB'>GB</option>" + 
+		"<option value='displayCountry?country=IN'>IN</option>" +
+		"<option value='displayCountry?country=IT'>IT</option>" +
+		"<option value='displayCountry?country=LT'>LT</option>" +
+		"</select></font></th>" +
+		
+		"<th><font color=white><select onChange='window.location.href=this.value'>" + 
+		"<option value=''>Year</option>" +
+		"<option value='/displayYear?year=2016'>2016</option>" + 
+		"<option value='/displayYear?year=2015'>2015</option>" +
+		"<option value='/displayYear?year=2014'>2014</option>" +
+		"<option value='/displayYear?year=2013'>2013</option>" +
+		"</select></font></th>" +
+		
+		"<th><font color=white><select onChange='window.location.href=this.value'>" + 
+		"<option value=''>Month</option>" +
+		"<option value='/displayMonth?month=12'>12</option>" + 
+		"<option value='/displayMonth?month=11'>11</option>" +
+		"<option value='/displayMonth?month=10'>10</option>" +
+		"<option value='/displayMonth?month=9'>9</option>" +
+		"</select></font></th>" +
+		
+		"<th><font color=white><a href='/displayWeek'>" + "This Week" + "</a></font></th>" +
+	
+		"<th><font color=white><a href='/displayDay?day=24'>" + "Today" + "</a></font></th>" +
+		"</tr></table>" +
+		
+		"<table border=1; cellpadding=4; cellspacing=0; style=border-collapse:collapse; bordercolor=f67ffff>" + 
 		"<tr>" +
 		"<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>RANK</font></th>" + 
 		"<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>USERNAME</font></th>" + 
@@ -108,19 +142,10 @@ class DisplayAPI
 		queryLeaderboard(query);
 	}
 	
-	//=============== NEEDS WORK - HAVING ISSUE WITH QUERIES ===============
 	public static function displayWeek()
-	{
+	{	
 		var dateNow:Date = Date.now();
-		var sevenAgo:Int = dateNow.getDate() - 7;
-		var sixAgo:Int = dateNow.getDate() - 6;
-		var fiveAgo:Int = dateNow.getDate() - 5;
-		var fourAgo:Int = dateNow.getDate() - 4;
-		var threeAgo:Int = dateNow.getDate() - 3;
-		var twoAgo:Int = dateNow.getDate() - 2;
-		var oneAgo:Int = dateNow.getDate() - 1;
-		
-		var query:String = "SELECT * FROM gamedata WHERE ts LIKE '%-" + oneAgo + "%' ORDER by scoreDifference DESC LIMIT 10";
+		var query:String = "SELECT * FROM gamedata WHERE ts BETWEEN '" + Date.fromTime(dateNow.getTime()-7*24*3600*1000).toString() + "' AND '" + dateNow.toString() + "' ORDER by scoreDifference DESC LIMIT 10";
 		Lib.print(query);
 		queryLeaderboard(query);
 	}
