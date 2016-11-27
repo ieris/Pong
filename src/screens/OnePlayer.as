@@ -171,7 +171,6 @@ package screens
 			//Ball collision with the player paddles
 			else if ((ball.x <= player.x + player.width && ball.y >= player.y && ball.y + ball.height <= player.y + player.height))
 			{
-				trace("collide");
 				ball_xVelocity *= -1;
 			}
 		}
