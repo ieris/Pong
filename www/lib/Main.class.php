@@ -38,13 +38,11 @@ class Main {
 						} else {
 							$tmp7 = $d->parts[$len - 1];
 							if($tmp7 === "displayYear") {
-								$userInputString = $userInput->get("year");
-								api_DisplayAPI::displayYear($userInputString);
+								api_DisplayAPI::displayYear();
 							} else {
 								$tmp8 = $d->parts[$len - 1];
 								if($tmp8 === "displayMonth") {
-									$userInputString = $userInput->get("month");
-									api_DisplayAPI::displayMonth($userInputString);
+									api_DisplayAPI::displayMonth();
 								} else {
 									$tmp9 = $d->parts[$len - 1];
 									if($tmp9 === "displayWeek") {
@@ -52,10 +50,20 @@ class Main {
 									} else {
 										$tmp10 = $d->parts[$len - 1];
 										if($tmp10 === "displayDay") {
-											$userInputString = $userInput->get("day");
-											api_DisplayAPI::displayDay($userInputString);
+											api_DisplayAPI::displayDay();
 										} else {
-											php_Lib::hprint("<h2>You requested something else</h2>");
+											$tmp11 = $d->parts[$len - 1];
+											if($tmp11 === "customDay") {
+												$userInputString = $userInput->get("day");
+												api_DisplayAPI::displayCustomDay($userInputString);
+											} else {
+												$tmp12 = $d->parts[$len - 1];
+												if($tmp12 === "createJSON") {
+													api_DisplayAPI::createJSON();
+												} else {
+													php_Lib::hprint("<h2>You requested something else</h2>");
+												}
+											}
 										}
 									}
 								}

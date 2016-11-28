@@ -56,14 +56,12 @@ class Main
 		
 		else if (d.parts[len - 1] == "displayYear")
 		{
-			userInputString = userInput.get("year");
-			DisplayAPI.displayYear(userInputString);
+			DisplayAPI.displayYear();
 		}
 		
 		else if (d.parts[len - 1] == "displayMonth")
 		{
-			userInputString = userInput.get("month");
-			DisplayAPI.displayMonth(userInputString);
+			DisplayAPI.displayMonth();
 		}
 		
 		else if (d.parts[len - 1] == "displayWeek")
@@ -73,8 +71,18 @@ class Main
 		
 		else if (d.parts[len - 1] == "displayDay")
 		{
+			DisplayAPI.displayDay();
+		}
+		
+		else if (d.parts[len - 1] == "customDay")
+		{
 			userInputString = userInput.get("day");
-			DisplayAPI.displayDay(userInputString);
+			DisplayAPI.displayCustomDay(userInputString);
+		}
+		
+		else if (d.parts[len - 1] == "createJSON")
+		{
+			DisplayAPI.createJSON();
 		}
 		
 		else 

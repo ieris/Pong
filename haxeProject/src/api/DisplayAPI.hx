@@ -3,11 +3,14 @@ import php.Lib;
 import sys.db.Manager;
 import sys.db.Mysql;
 import sys.db.Types;
+import haxe.Json;
+import sys.io.File;
 
 /**
  * ...
  * @author Andrew Finlay
  */
+
 class DisplayAPI 
 {
 	public function new() 
@@ -49,31 +52,21 @@ class DisplayAPI
 		
 		"<th><font color=white><select onChange='window.location.href=this.value'>" + 
 		"<option value=''>Country</option>" +
+		"<option value='/displayTop10'>ALL</option>" +
 		"<option value='/displayCountry?country=GB'>GB</option>" + 
 		"<option value='displayCountry?country=IN'>IN</option>" +
 		"<option value='displayCountry?country=IT'>IT</option>" +
 		"<option value='displayCountry?country=LT'>LT</option>" +
 		"</select></font></th>" +
 		
-		"<th><font color=white><select onChange='window.location.href=this.value'>" + 
-		"<option value=''>Year</option>" +
-		"<option value='/displayYear?year=2016'>2016</option>" + 
-		"<option value='/displayYear?year=2015'>2015</option>" +
-		"<option value='/displayYear?year=2014'>2014</option>" +
-		"<option value='/displayYear?year=2013'>2013</option>" +
-		"</select></font></th>" +
+		"<th><font color=white><a href='/displayYear'>" + "This Year" + "</a></font></th>" +
 		
-		"<th><font color=white><select onChange='window.location.href=this.value'>" + 
-		"<option value=''>Month</option>" +
-		"<option value='/displayMonth?month=12'>12</option>" + 
-		"<option value='/displayMonth?month=11'>11</option>" +
-		"<option value='/displayMonth?month=10'>10</option>" +
-		"<option value='/displayMonth?month=9'>9</option>" +
-		"</select></font></th>" +
+		"<th><font color=white><a href='/displayMonth'>" + "This Month" + "</a></font></th>" +
 		
 		"<th><font color=white><a href='/displayWeek'>" + "This Week" + "</a></font></th>" +
 	
-		"<th><font color=white><a href='/displayDay?day=24'>" + "Today" + "</a></font></th>" +
+		"<th><font color=white><a href='/displayDay'>" + "Today" + "</a></font></th>" +
+		
 		"</tr></table>" +
 		
 		"<table border=1; cellpadding=4; cellspacing=0; style=border-collapse:collapse; bordercolor=f67ffff>" + 
@@ -128,32 +121,79 @@ class DisplayAPI
 		queryLeaderboard(query);
 	}
 	
-	public static function displayYear(year:String)
+	public static function displayYear()
 	{
-		var query:String = "SELECT * FROM gamedata WHERE ts LIKE '" + year + "-%' ORDER by scoreDifference DESC LIMIT 10";
+		var query:String = "SELECT * FROM gamedata WHERE ts LIKE '" + (Date.now().getFullYear()) + "-%' ORDER by scoreDifference DESC LIMIT 10";
 		Lib.print(query);
 		queryLeaderboard(query);
 	}
 	
-	public static function displayMonth(month:String)
+	public static function displayMonth()
 	{
-		var query:String = "SELECT * FROM gamedata WHERE ts LIKE '%-" + month + "-%' ORDER by scoreDifference DESC LIMIT 10";
+		var query:String = "SELECT * FROM gamedata WHERE ts LIKE '" + Date.now().getFullYear() + "-" + (Date.now().getMonth()+1) + "-%' ORDER by scoreDifference DESC LIMIT 10";
 		Lib.print(query);
 		queryLeaderboard(query);
 	}
 	
 	public static function displayWeek()
 	{	
-		var dateNow:Date = Date.now();
-		var query:String = "SELECT * FROM gamedata WHERE ts BETWEEN '" + Date.fromTime(dateNow.getTime()-7*24*3600*1000).toString() + "' AND '" + dateNow.toString() + "' ORDER by scoreDifference DESC LIMIT 10";
+		var query:String = "SELECT * FROM gamedata WHERE ts BETWEEN '" + Date.fromTime(Date.now().getTime()-7*24*3600*1000).toString() + "' AND '" + Date.now().toString() + "' ORDER by scoreDifference DESC LIMIT 10";
 		Lib.print(query);
 		queryLeaderboard(query);
 	}
 	
-	public static function displayDay(day:String)
+	public static function displayDay()
+	{
+		var query:String;
+		
+		if (Date.now().getDate() < 10)
+		{
+			query = "SELECT * FROM gamedata WHERE ts LIKE '%-0" + (Date.now().getDate()) + "%' ORDER by scoreDifference DESC LIMIT 10";
+		}
+		else
+		{
+			query = "SELECT * FROM gamedata WHERE ts LIKE '%-" + (Date.now().getDate()) + " %' ORDER by scoreDifference DESC LIMIT 10";
+		}
+		
+		Lib.print(query);
+		queryLeaderboard(query);
+	}
+	
+	public static function displayCustomDay(day:String)
 	{
 		var query:String = "SELECT * FROM gamedata WHERE ts LIKE '%-" + day + "%' ORDER by scoreDifference DESC LIMIT 10";
 		Lib.print(query);
 		queryLeaderboard(query);
+	}
+	
+	public static function createJSON()
+	{
+		var cnx = Mysql.connect
+		({
+			
+			host : "localhost",
+			port : 3306,
+			user : "root",
+			pass : "",
+			database : "leaderboard",
+			socket : null,
+			
+		});
+		
+		var req = cnx.request("SELECT * FROM gamedata");
+		
+		var JSON;
+		
+		for (row in req)
+		{
+			var data = {Username: row.username, Country: row.countryA2, Score: row.scoreDifference, TS: convertToHaxeDateTime(row.ts)};
+			
+			JSON = Json.stringify(data);
+			
+			Lib.print(JSON + "<br>");
+		}
+		
+		var filePath = "C:\\University\\301CR - Advanced Games Programming\\Assignment 2\\Leaderboard\\Leaderboard\\src\\export.json";
+		File.saveContent(filePath, JSON);
 	}
 }
