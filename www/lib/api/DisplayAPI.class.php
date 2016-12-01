@@ -20,7 +20,7 @@ class api_DisplayAPI {
 		return Date::fromString($t_date);
 	}
 	static function queryLeaderboard($query) {
-		$cnx = sys_db_Mysql::connect(_hx_anonymous(array("host" => "localhost", "port" => 3306, "user" => "root", "pass" => "", "database" => "leaderboard", "socket" => null)));
+		$cnx = sys_db_Mysql::connect(_hx_anonymous(array("host" => "localhost", "port" => 3306, "user" => "andrewco_admin", "pass" => "Ican£tthink", "database" => "andrewco_leaderboard", "socket" => null)));
 		$req = $cnx->request($query);
 		php_Lib::hprint("<body>" . "<table cellpadding=4; cellspacing=0>" . "<tr>" . "<th><font color=white><a href='/displayAll'>" . "All" . "</a></font></th>" . "<th><font color=white><a href='/displayTop10'>" . "Top 10" . "</a></font></th>" . "<th><font color=white><select onChange='window.location.href=this.value'>" . "<option value=''>Country</option>" . "<option value='/displayTop10'>ALL</option>" . "<option value='/displayCountry?country=GB'>GB</option>" . "<option value='displayCountry?country=IN'>IN</option>" . "<option value='displayCountry?country=IT'>IT</option>" . "<option value='displayCountry?country=LT'>LT</option>" . "</select></font></th>" . "<th><font color=white><a href='/displayYear'>" . "This Year" . "</a></font></th>" . "<th><font color=white><a href='/displayMonth'>" . "This Month" . "</a></font></th>" . "<th><font color=white><a href='/displayWeek'>" . "This Week" . "</a></font></th>" . "<th><font color=white><a href='/displayDay'>" . "Today" . "</a></font></th>" . "</tr></table>" . "<table border=1; cellpadding=4; cellspacing=0; style=border-collapse:collapse; bordercolor=f67ffff>" . "<tr>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>RANK</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>USERNAME</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>COUNTRY</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>SCORE</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>TIMESTAMP</font></th>" . "<th style=background-color:#019e9e><font style=font-family:Verdana; color=white>ID</font></th>");
 		$i = 1;
@@ -40,36 +40,45 @@ class api_DisplayAPI {
 		php_Lib::hprint("</table></body>");
 	}
 	static function displayAll() {
-		php_Lib::hprint("SELECT * FROM gamedata");
-		api_DisplayAPI::queryLeaderboard("SELECT * FROM gamedata");
+		php_Lib::hprint("SELECT * FROM GameData");
+		api_DisplayAPI::queryLeaderboard("SELECT * FROM GameData");
 	}
 	static function displayTop10() {
-		php_Lib::hprint("SELECT * FROM gamedata ORDER by scoreDifference DESC LIMIT 10");
-		api_DisplayAPI::queryLeaderboard("SELECT * FROM gamedata ORDER by scoreDifference DESC LIMIT 10");
+		php_Lib::hprint("SELECT * FROM GameData ORDER by scoreDifference DESC LIMIT 10");
+		api_DisplayAPI::queryLeaderboard("SELECT * FROM GameData ORDER by scoreDifference DESC LIMIT 10");
 	}
 	static function displayCountry($country) {
-		$query = "SELECT * FROM gamedata WHERE countryA2='" . _hx_string_or_null($country) . "' ORDER by scoreDifference DESC LIMIT 10";
+		$query = "SELECT * FROM GameData WHERE countryA2='" . _hx_string_or_null($country) . "' ORDER by scoreDifference DESC LIMIT 10";
 		php_Lib::hprint($query);
 		api_DisplayAPI::queryLeaderboard($query);
 	}
 	static function displayYear() {
 		$tmp = Date::now()->getFullYear();
-		$query = "SELECT * FROM gamedata WHERE ts LIKE '" . _hx_string_rec($tmp, "") . "-%' ORDER by scoreDifference DESC LIMIT 10";
+		$query = "SELECT * FROM GameData WHERE ts LIKE '" . _hx_string_rec($tmp, "") . "-%' ORDER by scoreDifference DESC LIMIT 10";
 		php_Lib::hprint($query);
 		api_DisplayAPI::queryLeaderboard($query);
 	}
 	static function displayMonth() {
-		$tmp = Date::now()->getFullYear();
-		$tmp1 = "SELECT * FROM gamedata WHERE ts LIKE '" . _hx_string_rec($tmp, "") . "-";
-		$tmp2 = Date::now()->getMonth();
-		$query = _hx_string_or_null($tmp1) . _hx_string_rec(($tmp2 + 1), "") . "-%' ORDER by scoreDifference DESC LIMIT 10";
+		$query = null;
+		$tmp = Date::now()->getMonth();
+		if($tmp + 1 < 10) {
+			$tmp1 = Date::now()->getFullYear();
+			$tmp2 = "SELECT * FROM GameData WHERE ts LIKE '" . _hx_string_rec($tmp1, "") . "-0";
+			$tmp3 = Date::now()->getMonth();
+			$query = _hx_string_or_null($tmp2) . _hx_string_rec(($tmp3 + 1), "") . "-%' ORDER by scoreDifference DESC LIMIT 10";
+		} else {
+			$tmp4 = Date::now()->getFullYear();
+			$tmp5 = "SELECT * FROM GameData WHERE ts LIKE '" . _hx_string_rec($tmp4, "") . "-";
+			$tmp6 = Date::now()->getMonth();
+			$query = _hx_string_or_null($tmp5) . _hx_string_rec(($tmp6 + 1), "") . "-%' ORDER by scoreDifference DESC LIMIT 10";
+		}
 		php_Lib::hprint($query);
 		api_DisplayAPI::queryLeaderboard($query);
 	}
 	static function displayWeek() {
 		$tmp = Date::now()->getTime();
 		$tmp1 = Date::fromTime($tmp - 604800000)->toString();
-		$tmp2 = "SELECT * FROM gamedata WHERE ts BETWEEN '" . _hx_string_or_null($tmp1) . "' AND '";
+		$tmp2 = "SELECT * FROM GameData WHERE ts BETWEEN '" . _hx_string_or_null($tmp1) . "' AND '";
 		$tmp3 = Date::now()->toString();
 		$query = _hx_string_or_null($tmp2) . _hx_string_or_null($tmp3) . "' ORDER by scoreDifference DESC LIMIT 10";
 		php_Lib::hprint($query);
@@ -77,38 +86,49 @@ class api_DisplayAPI {
 	}
 	static function displayDay() {
 		$query = null;
-		$tmp = Date::now()->getDate();
-		if($tmp < 10) {
+		$tmp = Date::now()->getMonth();
+		if($tmp + 1 < 10) {
 			$tmp1 = Date::now()->getDate();
-			$query = "SELECT * FROM gamedata WHERE ts LIKE '%-0" . _hx_string_rec($tmp1, "") . "%' ORDER by scoreDifference DESC LIMIT 10";
+			if($tmp1 < 10) {
+				$tmp2 = Date::now()->getFullYear();
+				$tmp3 = "SELECT * FROM GameData WHERE ts LIKE '" . _hx_string_rec($tmp2, "") . "-0";
+				$tmp4 = Date::now()->getMonth();
+				$tmp5 = _hx_string_or_null($tmp3) . _hx_string_rec(($tmp4 + 1), "") . "-0";
+				$tmp6 = Date::now()->getDate();
+				$query = _hx_string_or_null($tmp5) . _hx_string_rec($tmp6, "") . "%' ORDER by scoreDifference DESC LIMIT 10";
+			} else {
+				$tmp7 = Date::now()->getFullYear();
+				$tmp8 = "SELECT * FROM GameData WHERE ts LIKE '" . _hx_string_rec($tmp7, "") . "-0";
+				$tmp9 = Date::now()->getMonth();
+				$tmp10 = _hx_string_or_null($tmp8) . _hx_string_rec(($tmp9 + 1), "") . "-";
+				$tmp11 = Date::now()->getDate();
+				$query = _hx_string_or_null($tmp10) . _hx_string_rec($tmp11, "") . "%' ORDER by scoreDifference DESC LIMIT 10";
+			}
 		} else {
-			$tmp2 = Date::now()->getDate();
-			$query = "SELECT * FROM gamedata WHERE ts LIKE '%-" . _hx_string_rec($tmp2, "") . " %' ORDER by scoreDifference DESC LIMIT 10";
+			$tmp12 = Date::now()->getDate();
+			if($tmp12 < 10) {
+				$tmp13 = Date::now()->getFullYear();
+				$tmp14 = "SELECT * FROM GameData WHERE ts LIKE '" . _hx_string_rec($tmp13, "") . "-";
+				$tmp15 = Date::now()->getMonth();
+				$tmp16 = _hx_string_or_null($tmp14) . _hx_string_rec(($tmp15 + 1), "") . "-0";
+				$tmp17 = Date::now()->getDate();
+				$query = _hx_string_or_null($tmp16) . _hx_string_rec($tmp17, "") . "%' ORDER by scoreDifference DESC LIMIT 10";
+			} else {
+				$tmp18 = Date::now()->getFullYear();
+				$tmp19 = "SELECT * FROM GameData WHERE ts LIKE '" . _hx_string_rec($tmp18, "") . "-";
+				$tmp20 = Date::now()->getMonth();
+				$tmp21 = _hx_string_or_null($tmp19) . _hx_string_rec(($tmp20 + 1), "") . "-";
+				$tmp22 = Date::now()->getDate();
+				$query = _hx_string_or_null($tmp21) . _hx_string_rec($tmp22, "") . "%' ORDER by scoreDifference DESC LIMIT 10";
+			}
 		}
 		php_Lib::hprint($query);
 		api_DisplayAPI::queryLeaderboard($query);
 	}
 	static function displayCustomDay($day) {
-		$query = "SELECT * FROM gamedata WHERE ts LIKE '%-" . _hx_string_or_null($day) . "%' ORDER by scoreDifference DESC LIMIT 10";
+		$query = "SELECT * FROM GameData WHERE ts LIKE '%-" . _hx_string_or_null($day) . "%' ORDER by scoreDifference DESC LIMIT 10";
 		php_Lib::hprint($query);
 		api_DisplayAPI::queryLeaderboard($query);
-	}
-	static function createJSON() {
-		$cnx = sys_db_Mysql::connect(_hx_anonymous(array("host" => "localhost", "port" => 3306, "user" => "root", "pass" => "", "database" => "leaderboard", "socket" => null)));
-		$req = $cnx->request("SELECT * FROM gamedata");
-		$JSON = null;
-		while(true) {
-			$tmp = !$req->hasNext();
-			if($tmp) {
-				break;
-			}
-			$row = $req->next();
-			$tmp1 = api_DisplayAPI::convertToHaxeDateTime($row->ts);
-			$JSON = haxe_Json::phpJsonEncode(_hx_anonymous(array("Username" => $row->username, "Country" => $row->countryA2, "Score" => $row->scoreDifference, "TS" => $tmp1)), null, null);
-			php_Lib::hprint(_hx_string_or_null($JSON) . "<br>");
-			unset($tmp1,$tmp,$row);
-		}
-		sys_io_File::saveContent("C:\\University\\301CR - Advanced Games Programming\\Assignment 2\\Leaderboard\\Leaderboard\\src\\export.json", $JSON);
 	}
 	function __toString() { return 'api.DisplayAPI'; }
 }

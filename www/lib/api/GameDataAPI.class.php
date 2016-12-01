@@ -4,8 +4,11 @@
 class api_GameDataAPI {
 	public function __construct() {}
 	public function addData() {
-		$value = sys_io_File::getContent("C:\\University\\301CR - Advanced Games Programming\\Assignment 2\\Leaderboard\\Leaderboard\\src\\gameData.json");
+		$value = sys_io_File::getContent("D:\\University\\301CR - Advanced Games Programming\\Assignment 2\\Leaderboard\\Leaderboard\\src\\gameData.json");
 		$json = haxe_Json::phpJsonDecode($value);
+		$params = php_Web::getParams();
+		$jsonStrData = $params->get("data");
+		haxe_Json::phpJsonDecode($jsonStrData);
 		$gameData = new db_GameData();
 		$gameData->username = $json->Username;
 		$gameData->countryA2 = $json->Country;

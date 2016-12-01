@@ -2,6 +2,7 @@ package;
 
 import api.DisplayAPI;
 import api.GameDataAPI;
+import api.ReturnAPI;
 import db.Table;
 import haxe.web.Dispatch;
 import php.Lib;
@@ -25,6 +26,8 @@ class Main
 		var len:Int = d.parts.length;
 		var userInput = Web.getParams();
 		var userInputString:String;
+		var userInputString1:String;
+		var userInputString2:String;
 		
 		if (d.parts[len - 1] == "createTable")
 		{
@@ -80,9 +83,46 @@ class Main
 			DisplayAPI.displayCustomDay(userInputString);
 		}
 		
-		else if (d.parts[len - 1] == "createJSON")
+		else if (d.parts[len - 1] == "returnAll")
 		{
-			DisplayAPI.createJSON();
+			ReturnAPI.returnAll();
+		}
+		
+		else if (d.parts[len - 1] == "returnTop10")
+		{
+			ReturnAPI.returnTop10();
+		}
+		
+		else if (d.parts[len - 1] == "returnCountry")
+		{
+			userInputString = userInput.get("country");
+			ReturnAPI.returnCountry(userInputString);
+		}
+		
+		else if (d.parts[len - 1] == "returnYear")
+		{
+			userInputString = userInput.get("year");
+			ReturnAPI.returnYear(userInputString);
+		}
+		
+		else if (d.parts[len - 1] == "returnMonth")
+		{
+			userInputString = userInput.get("year");
+			userInputString1 = userInput.get("month");
+			ReturnAPI.returnMonth(userInputString, userInputString1);
+		}
+		
+		else if (d.parts[len - 1] == "returnWeek")
+		{
+			ReturnAPI.returnWeek();
+		}
+		
+		else if (d.parts[len - 1] == "returnDay")
+		{
+			userInputString = userInput.get("year");
+			userInputString1 = userInput.get("month");
+			userInputString2 = userInput.get("day");
+			ReturnAPI.returnDay(userInputString, userInputString1, userInputString2);
 		}
 		
 		else 

@@ -18,9 +18,9 @@ class Table
 		({
 			host : "localhost",
 			port : 3306,
-			user : "root",
-			pass : "",
-			database : "leaderboard",
+			user : "andrewco_admin",
+			pass : "Ican£tthink",
+			database : "andrewco_leaderboard",
 			socket : null,
 		});
 		

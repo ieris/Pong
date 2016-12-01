@@ -13,6 +13,8 @@ class Main {
 		$len = $d->parts->length;
 		$userInput = php_Web::getParams();
 		$userInputString = null;
+		$userInputString1 = null;
+		$userInputString2 = null;
 		$tmp2 = $d->parts[$len - 1];
 		if($tmp2 === "createTable") {
 			db_Table::connect();
@@ -58,10 +60,47 @@ class Main {
 												api_DisplayAPI::displayCustomDay($userInputString);
 											} else {
 												$tmp12 = $d->parts[$len - 1];
-												if($tmp12 === "createJSON") {
-													api_DisplayAPI::createJSON();
+												if($tmp12 === "returnAll") {
+													api_ReturnAPI::returnAll();
 												} else {
-													php_Lib::hprint("<h2>You requested something else</h2>");
+													$tmp13 = $d->parts[$len - 1];
+													if($tmp13 === "returnTop10") {
+														api_ReturnAPI::returnTop10();
+													} else {
+														$tmp14 = $d->parts[$len - 1];
+														if($tmp14 === "returnCountry") {
+															$userInputString = $userInput->get("country");
+															api_ReturnAPI::returnCountry($userInputString);
+														} else {
+															$tmp15 = $d->parts[$len - 1];
+															if($tmp15 === "returnYear") {
+																$userInputString = $userInput->get("year");
+																api_ReturnAPI::returnYear($userInputString);
+															} else {
+																$tmp16 = $d->parts[$len - 1];
+																if($tmp16 === "returnMonth") {
+																	$userInputString = $userInput->get("year");
+																	$userInputString1 = $userInput->get("month");
+																	api_ReturnAPI::returnMonth($userInputString, $userInputString1);
+																} else {
+																	$tmp17 = $d->parts[$len - 1];
+																	if($tmp17 === "returnWeek") {
+																		api_ReturnAPI::returnWeek();
+																	} else {
+																		$tmp18 = $d->parts[$len - 1];
+																		if($tmp18 === "returnDay") {
+																			$userInputString = $userInput->get("year");
+																			$userInputString1 = $userInput->get("month");
+																			$userInputString2 = $userInput->get("day");
+																			api_ReturnAPI::returnDay($userInputString, $userInputString1, $userInputString2);
+																		} else {
+																			php_Lib::hprint("<h2>You requested something else</h2>");
+																		}
+																	}
+																}
+															}
+														}
+													}
 												}
 											}
 										}

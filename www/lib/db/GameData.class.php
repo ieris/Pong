@@ -31,5 +31,5 @@ class db_GameData extends sys_db_Object {
 	static $manager;
 	function __toString() { return 'db.GameData'; }
 }
-db_GameData::$__meta__ = _hx_anonymous(array("obj" => _hx_anonymous(array("rtti" => (new _hx_array(array("oy4:namey8:GameDatay7:indexesahy9:relationsahy7:hfieldsby8:usernameoR0R5y6:isNullfy1:tjy17:sys.db.RecordType:9:1i32gy8:scoreForoR0R9R6fR7jR8:1:0gy2:idoR0R10R6fR7jR8:0:0gy9:countryA2oR0R11R6fR7jR8:9:1i32gy2:tsoR0R12R6fR7jR8:11:0gy15:scoreDifferenceoR0R13R6fR7r7gy12:scoreAgainstoR0R14R6fR7r7ghy3:keyaR10hy6:fieldsar8r4r10r6r15r14r12hg")))))));
+db_GameData::$__meta__ = _hx_anonymous(array("obj" => _hx_anonymous(array("rtti" => (new _hx_array(array("oy4:namey8:GameDatay7:indexesahy9:relationsahy7:hfieldsby8:usernameoR0R5y6:isNullfy1:tjy17:sys.db.RecordType:9:1i32gy8:scoreForoR0R9R6fR7jR8:1:0gy2:idoR0R10R6fR7jR8:0:0gy9:countryA2oR0R11R6fR7jR8:9:1i32gy2:tsoR0R12R6fR7jR8:10:0gy15:scoreDifferenceoR0R13R6fR7r7gy12:scoreAgainstoR0R14R6fR7r7ghy3:keyaR10hy6:fieldsar8r4r10r6r15r14r12hg")))))));
 db_GameData::$manager = new sys_db_Manager(_hx_qtype("db.GameData"));

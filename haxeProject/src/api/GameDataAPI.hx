@@ -30,9 +30,16 @@ class GameDataAPI
 	
 	public function addData() 
 	{
-		var filePath = "C:\\University\\301CR - Advanced Games Programming\\Assignment 2\\Leaderboard\\Leaderboard\\src\\gameData.json";
+		var filePath = "D:\\University\\301CR - Advanced Games Programming\\Assignment 2\\Leaderboard\\Leaderboard\\src\\gameData.json";
 		var value = File.getContent(filePath);
 		var json = Json.parse(value);
+		
+		
+		var params = Web.getParams();
+		
+		var jsonStrData = params.get("data");
+		
+		var jsonObj = Json.parse(jsonStrData);
 		
 		var gameData = new GameData();
 		

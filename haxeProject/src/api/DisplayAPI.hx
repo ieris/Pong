@@ -31,14 +31,12 @@ class DisplayAPI
 	{
 		var cnx = Mysql.connect
 		({
-			
 			host : "localhost",
 			port : 3306,
-			user : "root",
-			pass : "",
-			database : "leaderboard",
+			user : "andrewco_admin",
+			pass : "Ican£tthink",
+			database : "andrewco_leaderboard",
 			socket : null,
-			
 		});
 		
 		var req = cnx.request(query);
@@ -102,42 +100,52 @@ class DisplayAPI
 	
 	public static function displayAll()
 	{
-		var query:String = "SELECT * FROM gamedata";
+		var query:String = "SELECT * FROM GameData";
 		Lib.print(query);
 		queryLeaderboard(query);
 	}
 	
 	public static function displayTop10()
 	{
-		var query:String = "SELECT * FROM gamedata ORDER by scoreDifference DESC LIMIT 10";
+		var query:String = "SELECT * FROM GameData ORDER by scoreDifference DESC LIMIT 10";
 		Lib.print(query);
 		queryLeaderboard(query);
 	}
 	
 	public static function displayCountry(country:String)
 	{
-		var query:String = "SELECT * FROM gamedata WHERE countryA2='" + country + "' ORDER by scoreDifference DESC LIMIT 10";
+		var query:String = "SELECT * FROM GameData WHERE countryA2='" + country + "' ORDER by scoreDifference DESC LIMIT 10";
 		Lib.print(query);
 		queryLeaderboard(query);
 	}
 	
 	public static function displayYear()
 	{
-		var query:String = "SELECT * FROM gamedata WHERE ts LIKE '" + (Date.now().getFullYear()) + "-%' ORDER by scoreDifference DESC LIMIT 10";
+		var query:String = "SELECT * FROM GameData WHERE ts LIKE '" + (Date.now().getFullYear()) + "-%' ORDER by scoreDifference DESC LIMIT 10";
 		Lib.print(query);
 		queryLeaderboard(query);
 	}
 	
 	public static function displayMonth()
 	{
-		var query:String = "SELECT * FROM gamedata WHERE ts LIKE '" + Date.now().getFullYear() + "-" + (Date.now().getMonth()+1) + "-%' ORDER by scoreDifference DESC LIMIT 10";
+		var query:String;
+		
+		if ((Date.now().getMonth() + 1) < 10)
+		{
+			query = "SELECT * FROM GameData WHERE ts LIKE '" + Date.now().getFullYear() + "-0" + (Date.now().getMonth() + 1) + "-%' ORDER by scoreDifference DESC LIMIT 10";
+		}
+		else
+		{
+			query = "SELECT * FROM GameData WHERE ts LIKE '" + Date.now().getFullYear() + "-" + (Date.now().getMonth() + 1) + "-%' ORDER by scoreDifference DESC LIMIT 10";
+		}
+		
 		Lib.print(query);
 		queryLeaderboard(query);
 	}
 	
 	public static function displayWeek()
 	{	
-		var query:String = "SELECT * FROM gamedata WHERE ts BETWEEN '" + Date.fromTime(Date.now().getTime()-7*24*3600*1000).toString() + "' AND '" + Date.now().toString() + "' ORDER by scoreDifference DESC LIMIT 10";
+		var query:String = "SELECT * FROM GameData WHERE ts BETWEEN '" + Date.fromTime(Date.now().getTime()-7*24*3600*1000).toString() + "' AND '" + Date.now().toString() + "' ORDER by scoreDifference DESC LIMIT 10";
 		Lib.print(query);
 		queryLeaderboard(query);
 	}
@@ -146,13 +154,27 @@ class DisplayAPI
 	{
 		var query:String;
 		
-		if (Date.now().getDate() < 10)
+		if ((Date.now().getMonth() + 1) < 10)
 		{
-			query = "SELECT * FROM gamedata WHERE ts LIKE '%-0" + (Date.now().getDate()) + "%' ORDER by scoreDifference DESC LIMIT 10";
+			if (Date.now().getDate() < 10)
+			{
+				query = "SELECT * FROM GameData WHERE ts LIKE '" + Date.now().getFullYear() + "-0" + (Date.now().getMonth()+1) + "-0" + (Date.now().getDate()) + "%' ORDER by scoreDifference DESC LIMIT 10";
+			}
+			else
+			{
+				query = "SELECT * FROM GameData WHERE ts LIKE '" + Date.now().getFullYear() + "-0" + (Date.now().getMonth()+1) + "-" + (Date.now().getDate()) + "%' ORDER by scoreDifference DESC LIMIT 10";
+			}
 		}
 		else
 		{
-			query = "SELECT * FROM gamedata WHERE ts LIKE '%-" + (Date.now().getDate()) + " %' ORDER by scoreDifference DESC LIMIT 10";
+			if (Date.now().getDate() < 10)
+			{
+				query = "SELECT * FROM GameData WHERE ts LIKE '" + Date.now().getFullYear() + "-" + (Date.now().getMonth()+1) + "-0" + (Date.now().getDate()) + "%' ORDER by scoreDifference DESC LIMIT 10";
+			}
+			else
+			{
+				query = "SELECT * FROM GameData WHERE ts LIKE '" + Date.now().getFullYear() + "-" + (Date.now().getMonth()+1) + "-" + (Date.now().getDate()) + "%' ORDER by scoreDifference DESC LIMIT 10";
+			}
 		}
 		
 		Lib.print(query);
@@ -161,39 +183,8 @@ class DisplayAPI
 	
 	public static function displayCustomDay(day:String)
 	{
-		var query:String = "SELECT * FROM gamedata WHERE ts LIKE '%-" + day + "%' ORDER by scoreDifference DESC LIMIT 10";
+		var query:String = "SELECT * FROM GameData WHERE ts LIKE '%-" + day + "%' ORDER by scoreDifference DESC LIMIT 10";
 		Lib.print(query);
 		queryLeaderboard(query);
-	}
-	
-	public static function createJSON()
-	{
-		var cnx = Mysql.connect
-		({
-			
-			host : "localhost",
-			port : 3306,
-			user : "root",
-			pass : "",
-			database : "leaderboard",
-			socket : null,
-			
-		});
-		
-		var req = cnx.request("SELECT * FROM gamedata");
-		
-		var JSON;
-		
-		for (row in req)
-		{
-			var data = {Username: row.username, Country: row.countryA2, Score: row.scoreDifference, TS: convertToHaxeDateTime(row.ts)};
-			
-			JSON = Json.stringify(data);
-			
-			Lib.print(JSON + "<br>");
-		}
-		
-		var filePath = "C:\\University\\301CR - Advanced Games Programming\\Assignment 2\\Leaderboard\\Leaderboard\\src\\export.json";
-		File.saveContent(filePath, JSON);
 	}
 }

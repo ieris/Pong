@@ -16,5 +16,5 @@ class GameData extends Object
 	public var scoreFor:SInt;
 	public var scoreAgainst:SInt;
 	public var scoreDifference:SInt;
-	public var ts:SDateTime;
+	public var ts:SDate;
 }
