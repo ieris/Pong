@@ -1,7 +1,9 @@
 package;
 
+import api.BackUpAPI;
 import api.DisplayAPI;
-import api.GameDataAPI;
+import api.AddDataAPI;
+import api.RemoveDataAPI;
 import api.ReturnAPI;
 import db.Table;
 import haxe.web.Dispatch;
@@ -36,9 +38,9 @@ class Main
 			Table.disconnect();
 		}
 		
-		else if (d.parts[len - 1] == "addData") 
+		else if (d.parts[len - 1] == "parseData")
 		{
-			new GameDataAPI().addData();
+			new AddDataAPI().parseData();
 		}
 		
 		else if (d.parts[len - 1] == "displayAll")
@@ -62,9 +64,19 @@ class Main
 			DisplayAPI.displayYear();
 		}
 		
+		else if (d.parts[len - 1] == "displayYearAll")
+		{
+			DisplayAPI.displayYearAll();
+		}
+		
 		else if (d.parts[len - 1] == "displayMonth")
 		{
 			DisplayAPI.displayMonth();
+		}
+		
+		else if (d.parts[len - 1] == "displayMonthAll")
+		{
+			DisplayAPI.displayMonthAll();
 		}
 		
 		else if (d.parts[len - 1] == "displayWeek")
@@ -72,15 +84,19 @@ class Main
 			DisplayAPI.displayWeek();
 		}
 		
+		else if (d.parts[len - 1] == "displayWeekAll")
+		{
+			DisplayAPI.displayWeekAll();
+		}
+		
 		else if (d.parts[len - 1] == "displayDay")
 		{
 			DisplayAPI.displayDay();
 		}
 		
-		else if (d.parts[len - 1] == "customDay")
+		else if (d.parts[len - 1] == "displayDayAll")
 		{
-			userInputString = userInput.get("day");
-			DisplayAPI.displayCustomDay(userInputString);
+			DisplayAPI.displayDayAll();
 		}
 		
 		else if (d.parts[len - 1] == "returnAll")
@@ -123,6 +139,28 @@ class Main
 			userInputString1 = userInput.get("month");
 			userInputString2 = userInput.get("day");
 			ReturnAPI.returnDay(userInputString, userInputString1, userInputString2);
+		}
+		
+		else if (d.parts[len - 1] == "returnUsername")
+		{
+			userInputString = userInput.get("username");
+			ReturnAPI.returnUsername(userInputString);
+		}
+		
+		else if (d.parts[len - 1] == "removeData")
+		{
+			userInputString = userInput.get("query");
+			RemoveDataAPI.deleteData(userInputString);
+		}
+		
+		else if (d.parts[len - 1] == "backupData")
+		{
+			BackUpAPI.backupData();
+		}
+		
+		else if (d.parts[len - 1] == "restoreData")
+		{
+			BackUpAPI.restoreData();
 		}
 		
 		else 

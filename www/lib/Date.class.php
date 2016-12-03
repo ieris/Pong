@@ -20,15 +20,6 @@ class Date {
 	public function getDate() {
 		return intval(date("j", $this->__t));
 	}
-	public function getHours() {
-		return intval(date("G", $this->__t));
-	}
-	public function getMinutes() {
-		return intval(date("i", $this->__t));
-	}
-	public function getSeconds() {
-		return intval(date("s", $this->__t));
-	}
 	public function toString() {
 		return date("Y-m-d H:i:s", $this->__t);
 	}

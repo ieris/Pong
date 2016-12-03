@@ -1,4 +1,5 @@
 package api;
+
 import php.Lib;
 import sys.db.Manager;
 import sys.db.Mysql;
@@ -8,7 +9,7 @@ import sys.io.File;
 
 /**
  * ...
- * @author ...
+ * @author Andrew Finlay
  */
 
 class ReturnAPI 
@@ -18,11 +19,11 @@ class ReturnAPI
 		
 	}
 	
-	public static function convertToHaxeDateTime(s_date:SDateTime):Date 
+	public static function convertToHaxeDateTime(s_date:SDate):Date 
 	{
 		var t_date:String;
 
-		t_date = s_date.getFullYear() + "-" + (s_date.getMonth() + 1) + "-" + s_date.getDate() + " " + s_date.getHours() + ":" + s_date.getMinutes() + ":" + s_date.getSeconds();
+		t_date = s_date.getFullYear() + "-" + (s_date.getMonth() + 1) + "-" + s_date.getDate();
 
 		return Date.fromString(t_date);
 	}
@@ -31,7 +32,6 @@ class ReturnAPI
 	{
 		var cnx = Mysql.connect
 		({
-			
 			host : "localhost",
 			port : 3306,
 			user : "andrewco_admin",
@@ -60,7 +60,6 @@ class ReturnAPI
 	{
 		var cnx = Mysql.connect
 		({
-			
 			host : "localhost",
 			port : 3306,
 			user : "andrewco_admin",
@@ -89,7 +88,6 @@ class ReturnAPI
 	{
 		var cnx = Mysql.connect
 		({
-			
 			host : "localhost",
 			port : 3306,
 			user : "andrewco_admin",
@@ -118,7 +116,6 @@ class ReturnAPI
 	{
 		var cnx = Mysql.connect
 		({
-			
 			host : "localhost",
 			port : 3306,
 			user : "andrewco_admin",
@@ -159,7 +156,6 @@ class ReturnAPI
 	{
 		var cnx = Mysql.connect
 		({
-			
 			host : "localhost",
 			port : 3306,
 			user : "andrewco_admin",
@@ -224,7 +220,6 @@ class ReturnAPI
 	{
 		var cnx = Mysql.connect
 		({
-			
 			host : "localhost",
 			port : 3306,
 			user : "andrewco_admin",
@@ -253,7 +248,6 @@ class ReturnAPI
 	{
 		var cnx = Mysql.connect
 		({
-			
 			host : "localhost",
 			port : 3306,
 			user : "andrewco_admin",
@@ -359,6 +353,34 @@ class ReturnAPI
 			
 		JSON = Json.stringify(data);
 			
+		Lib.print(JSON);
+	}
+	
+	public static function returnUsername(username:String)
+	{
+		var cnx = Mysql.connect
+		({
+			host : "localhost",
+			port : 3306,
+			user : "andrewco_admin",
+			pass : "Ican£tthink",
+			database : "andrewco_leaderboard",
+			socket : null,
+		});
+		
+		var JSON;
+		var arrayOfRows = new Array();
+		var data = {leaderboardData:arrayOfRows};
+		
+		var req = cnx.request("SELECT * FROM GameData WHERE Username='" + username + "' ORDER by scoreDifference DESC LIMIT 10");
+					
+		for (row in req)
+		{
+			data.leaderboardData.push({Username: row.username, Country: row.countryA2, Score: row.scoreDifference, TS: convertToHaxeDateTime(row.ts)});
+		}
+		
+		JSON = Json.stringify(data);
+		
 		Lib.print(JSON);
 	}
 }

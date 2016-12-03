@@ -3,7 +3,6 @@ import php.Lib;
 import sys.db.Manager;
 import sys.db.Mysql;
 import sys.db.TableCreate;
-import sys.db.Types;
 
 /**
  * ...

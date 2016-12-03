@@ -22,8 +22,8 @@ class Main {
 			db_Table::disconnect();
 		} else {
 			$tmp3 = $d->parts[$len - 1];
-			if($tmp3 === "addData") {
-				_hx_deref(new api_GameDataAPI())->addData();
+			if($tmp3 === "parseData") {
+				_hx_deref(new api_AddDataAPI())->parseData();
 			} else {
 				$tmp4 = $d->parts[$len - 1];
 				if($tmp4 === "displayAll") {
@@ -43,58 +43,94 @@ class Main {
 								api_DisplayAPI::displayYear();
 							} else {
 								$tmp8 = $d->parts[$len - 1];
-								if($tmp8 === "displayMonth") {
-									api_DisplayAPI::displayMonth();
+								if($tmp8 === "displayYearAll") {
+									api_DisplayAPI::displayYearAll();
 								} else {
 									$tmp9 = $d->parts[$len - 1];
-									if($tmp9 === "displayWeek") {
-										api_DisplayAPI::displayWeek();
+									if($tmp9 === "displayMonth") {
+										api_DisplayAPI::displayMonth();
 									} else {
 										$tmp10 = $d->parts[$len - 1];
-										if($tmp10 === "displayDay") {
-											api_DisplayAPI::displayDay();
+										if($tmp10 === "displayMonthAll") {
+											api_DisplayAPI::displayMonthAll();
 										} else {
 											$tmp11 = $d->parts[$len - 1];
-											if($tmp11 === "customDay") {
-												$userInputString = $userInput->get("day");
-												api_DisplayAPI::displayCustomDay($userInputString);
+											if($tmp11 === "displayWeek") {
+												api_DisplayAPI::displayWeek();
 											} else {
 												$tmp12 = $d->parts[$len - 1];
-												if($tmp12 === "returnAll") {
-													api_ReturnAPI::returnAll();
+												if($tmp12 === "displayWeekAll") {
+													api_DisplayAPI::displayWeekAll();
 												} else {
 													$tmp13 = $d->parts[$len - 1];
-													if($tmp13 === "returnTop10") {
-														api_ReturnAPI::returnTop10();
+													if($tmp13 === "displayDay") {
+														api_DisplayAPI::displayDay();
 													} else {
 														$tmp14 = $d->parts[$len - 1];
-														if($tmp14 === "returnCountry") {
-															$userInputString = $userInput->get("country");
-															api_ReturnAPI::returnCountry($userInputString);
+														if($tmp14 === "displayDayAll") {
+															api_DisplayAPI::displayDayAll();
 														} else {
 															$tmp15 = $d->parts[$len - 1];
-															if($tmp15 === "returnYear") {
-																$userInputString = $userInput->get("year");
-																api_ReturnAPI::returnYear($userInputString);
+															if($tmp15 === "returnAll") {
+																api_ReturnAPI::returnAll();
 															} else {
 																$tmp16 = $d->parts[$len - 1];
-																if($tmp16 === "returnMonth") {
-																	$userInputString = $userInput->get("year");
-																	$userInputString1 = $userInput->get("month");
-																	api_ReturnAPI::returnMonth($userInputString, $userInputString1);
+																if($tmp16 === "returnTop10") {
+																	api_ReturnAPI::returnTop10();
 																} else {
 																	$tmp17 = $d->parts[$len - 1];
-																	if($tmp17 === "returnWeek") {
-																		api_ReturnAPI::returnWeek();
+																	if($tmp17 === "returnCountry") {
+																		$userInputString = $userInput->get("country");
+																		api_ReturnAPI::returnCountry($userInputString);
 																	} else {
 																		$tmp18 = $d->parts[$len - 1];
-																		if($tmp18 === "returnDay") {
+																		if($tmp18 === "returnYear") {
 																			$userInputString = $userInput->get("year");
-																			$userInputString1 = $userInput->get("month");
-																			$userInputString2 = $userInput->get("day");
-																			api_ReturnAPI::returnDay($userInputString, $userInputString1, $userInputString2);
+																			api_ReturnAPI::returnYear($userInputString);
 																		} else {
-																			php_Lib::hprint("<h2>You requested something else</h2>");
+																			$tmp19 = $d->parts[$len - 1];
+																			if($tmp19 === "returnMonth") {
+																				$userInputString = $userInput->get("year");
+																				$userInputString1 = $userInput->get("month");
+																				api_ReturnAPI::returnMonth($userInputString, $userInputString1);
+																			} else {
+																				$tmp20 = $d->parts[$len - 1];
+																				if($tmp20 === "returnWeek") {
+																					api_ReturnAPI::returnWeek();
+																				} else {
+																					$tmp21 = $d->parts[$len - 1];
+																					if($tmp21 === "returnDay") {
+																						$userInputString = $userInput->get("year");
+																						$userInputString1 = $userInput->get("month");
+																						$userInputString2 = $userInput->get("day");
+																						api_ReturnAPI::returnDay($userInputString, $userInputString1, $userInputString2);
+																					} else {
+																						$tmp22 = $d->parts[$len - 1];
+																						if($tmp22 === "returnUsername") {
+																							$userInputString = $userInput->get("username");
+																							api_ReturnAPI::returnUsername($userInputString);
+																						} else {
+																							$tmp23 = $d->parts[$len - 1];
+																							if($tmp23 === "removeData") {
+																								$userInputString = $userInput->get("query");
+																								api_RemoveDataAPI::deleteData($userInputString);
+																							} else {
+																								$tmp24 = $d->parts[$len - 1];
+																								if($tmp24 === "backupData") {
+																									api_BackUpAPI::backupData();
+																								} else {
+																									$tmp25 = $d->parts[$len - 1];
+																									if($tmp25 === "restoreData") {
+																										api_BackUpAPI::restoreData();
+																									} else {
+																										php_Lib::hprint("<h2>You requested something else</h2>");
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																			}
 																		}
 																	}
 																}

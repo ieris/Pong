@@ -10,13 +10,7 @@ class api_ReturnAPI {
 		$tmp2 = $s_date->getMonth();
 		$tmp3 = _hx_string_or_null($tmp1) . _hx_string_rec(($tmp2 + 1), "") . "-";
 		$tmp4 = $s_date->getDate();
-		$tmp5 = _hx_string_or_null($tmp3) . _hx_string_rec($tmp4, "") . " ";
-		$tmp6 = $s_date->getHours();
-		$tmp7 = _hx_string_or_null($tmp5) . _hx_string_rec($tmp6, "") . ":";
-		$tmp8 = $s_date->getMinutes();
-		$tmp9 = _hx_string_or_null($tmp7) . _hx_string_rec($tmp8, "") . ":";
-		$tmp10 = $s_date->getSeconds();
-		$t_date = _hx_string_or_null($tmp9) . _hx_string_rec($tmp10, "");
+		$t_date = _hx_string_or_null($tmp3) . _hx_string_rec($tmp4, "");
 		return Date::fromString($t_date);
 	}
 	static function returnAll() {
@@ -337,6 +331,25 @@ class api_ReturnAPI {
 					}
 				}
 			}
+		}
+		$JSON = haxe_Json::phpJsonEncode($data, null, null);
+		php_Lib::hprint($JSON);
+	}
+	static function returnUsername($username) {
+		$cnx = sys_db_Mysql::connect(_hx_anonymous(array("host" => "localhost", "port" => 3306, "user" => "andrewco_admin", "pass" => "Ican£tthink", "database" => "andrewco_leaderboard", "socket" => null)));
+		$JSON = null;
+		$arrayOfRows = new _hx_array(array());
+		$data = _hx_anonymous(array("leaderboardData" => $arrayOfRows));
+		$req = $cnx->request("SELECT * FROM GameData WHERE Username='" . _hx_string_or_null($username) . "' ORDER by scoreDifference DESC LIMIT 10");
+		while(true) {
+			$tmp = !$req->hasNext();
+			if($tmp) {
+				break;
+			}
+			$row = $req->next();
+			$tmp1 = api_ReturnAPI::convertToHaxeDateTime($row->ts);
+			$data->leaderboardData->push(_hx_anonymous(array("Username" => $row->username, "Country" => $row->countryA2, "Score" => $row->scoreDifference, "TS" => $tmp1)));
+			unset($tmp1,$tmp,$row);
 		}
 		$JSON = haxe_Json::phpJsonEncode($data, null, null);
 		php_Lib::hprint($JSON);
