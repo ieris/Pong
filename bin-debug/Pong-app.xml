@@ -11,6 +11,8 @@
 			
 	minimumPatchLevel - The minimum patch level of the AIR runtime required to run 
 			the application. Optional.
+			
+	
 -->
 
 	<!-- A universally unique application identifier. Must be unique across all AIR applications.

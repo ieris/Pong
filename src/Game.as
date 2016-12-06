@@ -60,12 +60,12 @@ package
 				/*case "twoPlayer":
 					this.removeChild(screenWelcome);
 					this.addChild(screenTwoPlayer);
-					break;
+					break;*/
 				case "leaderboard":
 					this.removeChild(screenWelcome);
 					this.addChild(screenLeaderboard);
 					break;
-				case "options":
+				/*case "options":
 					this.removeChild(screenWelcome);
 					this.addChild(screenOptions);
 					break;*/

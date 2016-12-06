@@ -1,12 +1,13 @@
 package screens
 {
+	import flash.text.TextFormat;
+	import flash.ui.Keyboard;
+	
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
-	import starling.text.TextField;
 	import starling.events.KeyboardEvent;
-	import flash.text.TextFormat;
-	import flash.ui.Keyboard;
+	import starling.text.TextField;
 	
 	public class OnePlayer extends Sprite
 	{	
@@ -49,6 +50,8 @@ package screens
 		//Here are the score variables
 		public var playerTxt:TextField;
 		public var pcTxt:TextField;
+		
+		public var userName:TextField;
 		
 		//Here we initialize all of the event listeners
 		public function OnePlayer()
@@ -100,7 +103,7 @@ package screens
 			
 			//This is where we have our scores
 			
-			/*playerTxt = new TextField(10, 200, "Arial");
+			playerTxt = new TextField(10, 200, "Arial");
 			playerTxt.text = String(playerTxt);
 			this.addChild(playerTxt);
 			
@@ -108,10 +111,15 @@ package screens
 			pcTxt.text = String(pcTxt);
 			this.addChild(pcTxt);
 			
+			userName = new TextField(10, 200, "Arial");
+			userName.text = String(userName);
+			this.addChild(userName);
+			
 			var format:TextFormat = new TextFormat();
 			format.font = "Arial";
 			format.color = 0xFF0000;
-			format.size = 10;*/
+			format.size = 10;
+
 		}
 		
 		private function collision(event:Event):void
