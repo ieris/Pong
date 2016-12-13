@@ -50,12 +50,6 @@ class AddDataAPI
 		var acptToken = "NG$c0#f5H9EL~_o";
 		var token = Web.getClientHeader("token");
 		
-		//var submitTime = Date.now();
-		//var allowTime = submitTime.getFullYear() + "-" + (submitTime.getMonth() + 1) + "-" + submitTime.getDate() + " " + submitTime.getHours() + ":" + submitTime.getMinutes() + ":" + ((submitTime.getSeconds()) + 10);
-		//Lib.print(submitTime);
-		//Lib.print("<br>");
-		//Lib.print(allowTime);
-		
 		var cnx = Mysql.connect
 		({
 			host : "localhost",
@@ -73,7 +67,7 @@ class AddDataAPI
 		
 		for (row in req)
 		{
-			data.leaderboardData.push({TS: convertToHaxeDateTime(row.ts)});
+			data.leaderboardData.push({TS: convertToHaxeDateTime(row.ts), IP: row.ip});
 		}
 
 		var len:Int = data.leaderboardData.length;
@@ -87,35 +81,28 @@ class AddDataAPI
 			allowTime = Date.fromString(lastTime.getFullYear() + "-" + (lastTime.getMonth() + 1) + "-" + lastTime.getDate() + " " + lastTime.getHours() + ":" + (lastTime.getMinutes() + 1) + ":" + (lastTime.getSeconds() - 50));
 		}
 		
-		Lib.print("Last time: " + lastTime + "<br>");
+		var now0	= Date.now().getFullYear();
+		var now1 	= Date.now().getMonth() + 1;
+		var now2	= Date.now().getDate();
+		var now3	= Date.now().getHours();
+		var now4	= Date.now().getMinutes();
+		var now5	= Date.now().getSeconds();
 		
-		Lib.print("Allow time: " + allowTime + "<br>");
+		var UTCNow = DateTools.makeUtc(now0, now1, now2, now3, now4, now5);
 		
-		Lib.print("Time now: " + Date.now() + "<br>");
+		var allow0 	= allowTime.getFullYear();
+		var allow1 	= allowTime.getMonth() + 1;
+		var allow2 	= allowTime.getDate();
+		var allow3  = allowTime.getHours();
+		var allow4 	= allowTime.getMinutes();
+		var allow5 	= allowTime.getSeconds();
 		
-		var new0	= Date.now().getFullYear();
-		var new1 	= Date.now().getMonth() + 1;
-		var new2	= Date.now().getDate();
-		var new3	= Date.now().getHours();
-		var new4	= Date.now().getMinutes();
-		var new5	= Date.now().getSeconds();
+		var UTCAllowTime = DateTools.makeUtc(allow0, allow1, allow2, allow3, allow4, allow5);
 		
-		var UTCNow = DateTools.makeUtc(new0, new1, new2, new3, new4, new5);
+		var lastIP = data.leaderboardData[len - 1].IP;
+		var currentIP = Web.getClientIP();
 		
-		var test0 	= allowTime.getFullYear();
-		var test1 	= allowTime.getMonth() + 1;
-		var test2 	= allowTime.getDate();
-		var test3  	= allowTime.getHours();
-		var test4 	= allowTime.getMinutes();
-		var test5 	= allowTime.getSeconds();
-		
-		var UTCAllowTime = DateTools.makeUtc(test0, test1, test2, test3, test4, test5);
-	
-		Lib.print("Allow UTC: " + UTCAllowTime + "<br>");
-		
-		Lib.print("Now UTC: " + UTCAllowTime + "<br>");
-		
-		if (UTCNow > UTCAllowTime)
+		if ((UTCNow > UTCAllowTime) || (currentIP != lastIP))
 		{
 			var gameData = new GameData();
 			
@@ -125,9 +112,10 @@ class AddDataAPI
 			gameData.scoreAgainst = jsonObj.Conceded;
 			gameData.scoreDifference = gameData.scoreFor - gameData.scoreAgainst;
 			gameData.ts = convertToSQLDateTime(Date.now());
+			gameData.ip = Web.getClientIP();
 			
-			//if (token == acptToken)
-			//{
+			if (token == acptToken)
+			{
 				Table.connect();
 				gameData.insert();
 				Table.disconnect();
@@ -135,11 +123,11 @@ class AddDataAPI
 				Lib.print("<h2>Token valid<br>JSON parsed<br>Data added</h2>");
 				
 				BackUpAPI.backupData();
-			//}
-			//else 
-			//{
-			//	Lib.print("<h2>You are not authorised</h2>");
-			//}
+			}
+			else 
+			{
+				Lib.print("<h2>You are not authorised</h2>");
+			}
 		}
 		else
 		{

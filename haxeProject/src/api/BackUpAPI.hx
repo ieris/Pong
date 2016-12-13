@@ -59,7 +59,7 @@ class BackUpAPI
 		
 		for (row in req)
 		{
-			data.leaderboardData.push({ID: row.id, Username: row.username, Country: row.countryA2, Scored: row.scoreFor, Conceded: row.scoreAgainst, Score: row.scoreDifference, TS: row.ts});
+			data.leaderboardData.push({ID: row.id, Username: row.username, Country: row.countryA2, Scored: row.scoreFor, Conceded: row.scoreAgainst, Score: row.scoreDifference, TS: row.ts, IP: row.ip});
 		}
 		
 		JSON = Json.stringify(data);
@@ -104,6 +104,7 @@ class BackUpAPI
 					gameData.scoreAgainst = json.leaderboardData[i].Conceded;
 					gameData.scoreDifference = json.leaderboardData[i].Score;
 					gameData.ts = json.leaderboardData[i].TS;
+					gameData.ip = json.leaderboardData[i].IP;
 					
 					gameData.insert();
 				}
