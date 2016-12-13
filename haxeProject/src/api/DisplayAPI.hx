@@ -19,11 +19,11 @@ class DisplayAPI
 		
 	}
 
-	public static function convertToHaxeDateTime(s_date:SDate):Date 
+	public static function convertToHaxeDateTime(s_date:SDateTime):Date 
 	{
 		var t_date:String;
 
-		t_date = s_date.getFullYear() + "-" + (s_date.getMonth() + 1) + "-" + s_date.getDate();
+		t_date = s_date.getFullYear() + "-" + (s_date.getMonth() + 1) + "-" + s_date.getDate() + " " + s_date.getHours() + ":" + s_date.getMinutes() + ":" + s_date.getSeconds();
 
 		return Date.fromString(t_date);
 	}

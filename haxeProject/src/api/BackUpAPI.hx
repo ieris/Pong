@@ -4,6 +4,7 @@ import db.Table;
 import haxe.Json;
 import php.Lib;
 import php.Web;
+import sys.FileSystem;
 import sys.db.Mysql;
 import sys.db.Types;
 import sys.io.File;
@@ -20,30 +21,26 @@ class BackUpAPI
 		
 	}
 	
-	public static function convertToHaxeDateTime(s_date:SDate):Date 
+	public static function convertToHaxeDateTime(s_date:SDateTime):Date 
 	{
 		var t_date:String;
 
-		t_date = s_date.getFullYear() + "-" + (s_date.getMonth() + 1) + "-" + s_date.getDate();
+		t_date = s_date.getFullYear() + "-" + (s_date.getMonth() + 1) + "-" + s_date.getDate() + " " + s_date.getHours() + ":" + s_date.getMinutes() + ":" + s_date.getSeconds();
 
 		return Date.fromString(t_date);
 	}
 	
-	public static function convertToSQLDateTime(h_date:Date):SDate 
+	public static function convertToSQLDateTime(h_date:Date):SDateTime
 	{
 		var t_date:String;
 		
-		t_date = h_date.getFullYear() + "-" + (h_date.getMonth() + 1) + "-" + h_date.getDate();
+		t_date = h_date.getFullYear() + "-" + (h_date.getMonth() + 1) + "-" + h_date.getDate() + " " + h_date.getHours() + ":" + h_date.getMinutes() + ":" + h_date.getSeconds();
  
-		return cast(t_date, SDate);
+		return cast(t_date, SDateTime);
 	}
 	
 	public static function backupData()
 	{
-		var token = "B4{01PA5Nd";
-		var params = Web.getParams();
-		var str = params.get("token");
-
 		var cnx = Mysql.connect
 		({
 			host : "localhost",
@@ -58,63 +55,73 @@ class BackUpAPI
 		var arrayOfRows = new Array();
 		var data = {leaderboardData:arrayOfRows};
 		
-		if (str == token)
+		var req = cnx.request("SELECT * FROM GameData");
+		
+		for (row in req)
 		{
-			var req = cnx.request("SELECT * FROM GameData");
-			
-			for (row in req)
-			{
-				data.leaderboardData.push({ID: row.id, Username: row.username, Country: row.countryA2, Scored: row.scoreFor, Conceded: row.scoreAgainst, Score: row.scoreDifference, TS: convertToHaxeDateTime(row.ts)});
-			}
-			
-			JSON = Json.stringify(data);
-			
-			Lib.print(JSON);
-			
-			var filePath = "backup.json";
-			File.saveContent(filePath, JSON);
-			
-			Lib.print("<h2><br><br>SAVED TO FILE</h2>");
+			data.leaderboardData.push({ID: row.id, Username: row.username, Country: row.countryA2, Scored: row.scoreFor, Conceded: row.scoreAgainst, Score: row.scoreDifference, TS: row.ts});
 		}
-		else
-		{
-			Lib.print("<h2>Token invalid</h2>");
-		}
+		
+		JSON = Json.stringify(data);
+		
+		Lib.print(JSON);
+		
+		var filePath = "backup.json";
+		File.saveContent(filePath, JSON);
+		
+		Lib.print("<h2><br>Backup file has been created</h2>");
+
 	}
 	
 	public static function restoreData()
 	{
-		var token = "UHT2QfT{653OV8";
-		var params = Web.getParams();
-		var str = params.get("token");
-		
 		var filePath = "backup.json";
-		var value = File.getContent(filePath);
-		var json = Json.parse(value);
+		var json:Dynamic;
 		
-		var gameData = new GameData();
-		
-		for (i in 0...50)
+		var acptToken = "^2J{5U~55S@s70£";
+		var token = Web.getClientHeader("token");
+
+		if (acptToken == token)
 		{
-			gameData.username = json[i].Username;
-			gameData.countryA2 = json[i].Country;
-			gameData.scoreFor = json[i].Scored;
-			gameData.scoreAgainst = json[i].Conceded;
-			gameData.scoreDifference = json[i].scoreFor - json[i].scoreAgainst;
-			gameData.ts = json[i].ts;
-		}
-		
-		if (str == token)
-		{
-			Table.connect();
-			gameData.insert();
-			Table.disconnect();
+			if (FileSystem.exists(filePath))
+			{
+				var value = File.getContent(filePath);
+				json = Json.parse(value);
+				
+				var len:Int = json.leaderboardData.length;
+				Lib.print("<h2>" + json.leaderboardData.length + " pieces of data found</h2>");
+				
+				Table.connect();
+				
+				for (i in 0...len)
+				{
+					var gameData = new GameData();
+					
+					gameData.id = json.leaderboardData[i].ID;
+					gameData.username = json.leaderboardData[i].Username;
+					gameData.countryA2 = json.leaderboardData[i].Country;
+					gameData.scoreFor = json.leaderboardData[i].Scored;
+					gameData.scoreAgainst = json.leaderboardData[i].Conceded;
+					gameData.scoreDifference = json.leaderboardData[i].Score;
+					gameData.ts = json.leaderboardData[i].TS;
+					
+					gameData.insert();
+				}
 			
-			Lib.print("<h2>Restored the backup data</h2>");
+				Table.disconnect();
+					
+				Lib.print("<h2>Restored the backup data</h2>");
+
+			}
+			else
+			{
+				Lib.print("<h2>Backup does not exist</h2>");
+				return;
+			}
 		}
 		else
 		{
-			Lib.print("<h2>Token invalid</h2");
+			Lib.print("<h2>You are not authorised to make a restore</h2>");
 		}
 	}
 }

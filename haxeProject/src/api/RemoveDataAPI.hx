@@ -18,30 +18,31 @@ class RemoveDataAPI
 	
 	public static function deleteData(id:String)
 	{
-		var token = "[T0'f7`83WYOtA,";
 		var params = Web.getParams();
-		var jsonStringData = params.get("query");
-		var jsonObj = Json.parse(jsonStringData);
+		var query = params.get("query");
 		
-		var cnx = Mysql.connect
-		({
-			host : "localhost",
-			port : 3306,
-			user : "andrewco_admin",
-			pass : "Ican£tthink",
-			database : "andrewco_leaderboard",
-			socket : null,
-		}); 
+		var acptToken = "$/>?&ReqEQjs7ih";
+		var token = Web.getClientHeader("token");
 		
-		if (jsonObj.token == token)
+		if (token == acptToken)
 		{
-			var	req = cnx.request(jsonObj.query);
+			var cnx = Mysql.connect
+			({
+				host : "localhost",
+				port : 3306,
+				user : "andrewco_admin",
+				pass : "Ican£tthink",
+				database : "andrewco_leaderboard",
+				socket : null,
+			}); 
+
+			var	req = cnx.request("DELETE FROM GameData WHERE " + query);
 			
-			Lib.print("<h2>Query: " + jsonObj.query + "<br>Deleted data</h2>");
+			Lib.print("<h2>Your query: " + "DELETE FROM GameData WHERE " + query + "<br>Deleted data!</h2>");
 		}
 		else 
 		{
-			Lib.print("<h2>Token invalid</h2");
+			Lib.print("<h2>You are not authorised to delete data</h2>");
 		}
 	}
 }
