@@ -25,7 +25,6 @@ package screens
 	public class Leaderboard extends Sprite
 	{	
 		private var loader:URLLoader;
-	
 		private var textInput:TextField = new TextField();
 		private var textOutput:TextField = new TextField();
 		private var userName:String = new String();
@@ -73,7 +72,7 @@ package screens
 			
 			// ---------------------------------- DELETE DATA ------------------------------------------//
 			
-			var header:URLRequestHeader = new URLRequestHeader("token", "$/>?&ReqEQjs7ih");
+			/*var header:URLRequestHeader = new URLRequestHeader("token", "$/>?&ReqEQjs7ih");
 			var url:String = "http://andrew.coventry.domains/removeData?query=id=20";
 			var urlRequest:URLRequest = new URLRequest(url);	
 			urlRequest.method = URLRequestMethod.POST;
@@ -86,7 +85,7 @@ package screens
 			catch(error:Error)
 			{
 				trace("Unable to load the data from the leaderboard");
-			}						
+			}	*/					
 
 			/*var textFormat:TextFormat = new TextFormat("Arial", 24, 0xFF0000);			
 			textInput = new TextField();
