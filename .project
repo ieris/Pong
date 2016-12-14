@@ -27,6 +27,11 @@
 			<location>C:/Users/Iveta/Desktop/Hi-ReS-Stats-master/src</location>
 		</link>
 		<link>
+			<name>[source path] json</name>
+			<type>2</type>
+			<location>C:/Users/Iveta/Downloads/as3corelib-master/as3corelib-master/src/com/adobe/serialization/json</location>
+		</link>
+		<link>
 			<name>[source path] starling</name>
 			<type>2</type>
 			<location>C:/Users/Iveta/Downloads/starling-2.1/starling/src/starling</location>

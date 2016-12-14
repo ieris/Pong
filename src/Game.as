@@ -65,10 +65,10 @@ package
 					this.removeChild(screenWelcome);
 					this.addChild(screenLeaderboard);
 					break;
-				/*case "options":
+				case "options":
 					this.removeChild(screenWelcome);
 					this.addChild(screenOptions);
-					break;*/
+					break;
 				/*	case "gameOver":
 				screenInGame.disposeTemporarily();
 				screenWelcome.disposeTemporarily();
