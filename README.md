@@ -1,4 +1,4 @@
-#301CR - Leaderboard
+#301CR - Leaderboard by Andrew Finlay
 
 ##How to view it
 
@@ -9,4 +9,4 @@ Documentation how to work the leaderboard can be found [HERE](https://github.com
 
 ##Example of the leaderboard working
 
-[YouTube video link](https://youtu.be/gIGI6D-JZMw)
+[![YouTube video link](http://img.youtube.com/vi/gIGI6D-JZMw/0.jpg)](https://youtu.be/gIGI6D-JZMw)
