@@ -24,9 +24,10 @@ package screens
 	
 	public class Leaderboard extends Sprite
 	{	
-		private var player:OnePlayer = new OnePlayer();
+		private var welcome:Welcome = new Welcome();
+		private var player:Multiplayer = new Multiplayer();
 		private var myPaddlePosition:int;
-		private var multiplayer:OnePlayer = new OnePlayer();
+		private var multiplayer:Multiplayer = new Multiplayer();
 		private var loader:URLLoader;
 		private var textInput:TextField = new TextField();
 		private var textOutput:TextField = new TextField();
@@ -44,23 +45,22 @@ package screens
 			
 			//trace("leaderboard player : " + player.playerScore);
 			//trace("leaderboard pc : " + player.pcScore);
-
-			
+						
 			//this.addChild(multiplayer);
 			
 			/*var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
-			var url:String = "http://http://iveta.coventry.domains/testingServerConnection.html";
+			var url:String = "%22Username%22:%22Alice%22,%22Country%22:%22USA%22,%22Scored%22:12,%22Conceded%22:2";
 			var urlRequest:URLRequest = new URLRequest(url);
-			var variables:URLVariables = new URLVariables();
+			//var variables:URLVariables = new URLVariables();
 			urlRequest.method = URLRequestMethod.POST;
 			urlRequest.requestHeaders.push(header);
 			
-			variables.ball_x_position = 0;
-			variables.ball_y_position = 0;
-			variables.player_one_y_position = 0;
-			variables.player_two_y_position = 0;
+			//variables.ball_x_position = 0;
+			//variables.ball_y_position = 0;
+			//variables.player_one_y_position = 0;
+			//variables.player_two_y_position = 0;
 			
-			urlRequest.data = variables;
+			//urlRequest.data = variables;
 			
 			try
 			{
@@ -69,11 +69,11 @@ package screens
 			catch(error:Error)
 			{
 				trace("Unable to load the data from the leaderboard");
-			}
+			}*/
 			
-			serverSocket.addEventListener(Event.CONNECT,socketConnected);
-			serverSocket.addEventListener(ProgressEvent.SOCKET_DATA,socketData);
-			serverSocket.connect(ip, port);*/
+			//serverSocket.addEventListener(Event.CONNECT,socketConnected);
+			//serverSocket.addEventListener(ProgressEvent.SOCKET_DATA,socketData);
+			//serverSocket.connect(ip, port);*/
 			
 			//Add in variables that are collected from the game
 			//Include input data so the player can create a new account
@@ -201,11 +201,6 @@ package screens
 		
 		private function ioErrorHandler(event:IOErrorEvent):void {
 			trace("ioErrorHandler: " + event);
-		}
-		
-		private function newPlayer(event:TextEvent):void
-		{
-
 		}
 	}
 }

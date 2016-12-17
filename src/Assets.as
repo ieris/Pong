@@ -24,11 +24,11 @@ package
 		
 		//Welcome screen
 		
-		[Embed(source="../Assets/Welcome/OnePlayerButton.jpg")]
-		public static const OnePlayerButton:Class;
+		[Embed(source="../Assets/Welcome/MultiplayerButton.jpg")]
+		public static const MultiplayerButton:Class;
 		
-		[Embed(source="../Assets/Welcome/TwoPlayerButton.jpg")]
-		public static const TwoPlayerButton:Class;
+		[Embed(source="../Assets/Welcome/SingleplayerButton.jpg")]
+		public static const SingleplayerButton:Class;
 		
 		[Embed(source="../Assets/Welcome/LeaderboardButton.jpg")]
 		public static const LeaderboardButton:Class;
@@ -44,6 +44,25 @@ package
 		
 		[Embed(source="../Assets/Welcome/BallSelector.png")]
 		public static const BallSelector:Class;
+		
+		//Multiplayer/Singleplayer assets
+		
+		[Embed(source="../Assets/UserInputBox.png")]
+		public static const UserInputBox:Class;
+
+		[Embed(source="../Assets/logInButton.png")]
+		public static const LogInButton:Class;
+		
+		//Log in assets
+		
+		[Embed(source="../Assets/Name1.png")]
+		public static const Name1:Class;
+		
+		[Embed(source="../Assets/Name2.png")]
+		public static const Name2:Class;
+		
+		[Embed(source="../Assets/Name3.png")]
+		public static const Name3:Class;
 		
 		private static var gameTextures:Dictionary = new Dictionary();
 		

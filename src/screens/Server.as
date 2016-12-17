@@ -1,6 +1,6 @@
 package screens
 {
-	import flash.events.Event;
+	import starling.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
@@ -18,7 +18,7 @@ package screens
 	{	
 		private var myPaddlePosition:int;
 		private var socket:Socket;
-		private var multiplayer:OnePlayer = new OnePlayer();
+		private var multiplayer:Multiplayer = new Multiplayer();
 		private var serverSocket:ServerSocket;
 		private var clientSockets:Array = new Array(); 
 		private var port:uint = 53000;
@@ -50,11 +50,11 @@ package screens
 			}*/
 			
 			 
-			socket = new Socket();
+			//socket = new Socket();
 			
-			socket.addEventListener( Event.CONNECT, onConnect );
+			//socket.addEventListener( Event.CONNECT, onConnect );
 			
-			socket.connect( "127.0.0.1", 53000 );
+			//socket.connect( "127.0.0.1", 53000 );
 		}
 		
 		private function onConnect(event:Event):void

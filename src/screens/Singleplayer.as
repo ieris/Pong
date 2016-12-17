@@ -2,9 +2,9 @@ package screens
 {
 	import starling.display.Sprite;
 	
-	public class TwoPlayer extends Sprite
+	public class Singleplayer extends Sprite
 	{
-		public function TwoPlayer()
+		public function Singleplayer()
 		{
 			super();
 		}

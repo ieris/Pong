@@ -1,32 +1,29 @@
 package
 {
 	//Screens, onChange screen cases 'play'
-	import events.NavigationEvent;		
-	import screens.OnePlayer;
-	//import screens.TwoPlayer;
+	import events.NavigationEvent;
+	
 	import screens.Leaderboard;
-	import screens.Options;
+	import screens.Multiplayer;
+	import screens.Server;
+	import screens.Singleplayer;
 	import screens.Welcome;
+	
 	import starling.display.Sprite;
 	import starling.events.Event;
-	import screens.Server;
-
-	//import flash.events.Event;
-	
-	//{"Username":"Rahul","Country":"IN","Scored":8,"Conceded":2}
 	
 	public class Game extends Sprite
 	{
 		private var screenWelcome:Welcome;
-		private var screenOnePlayer:OnePlayer;
+		private var screenMultiplayer:Multiplayer;
+		private var screenSingleplayer:Singleplayer;
 		private var screenTwoPlayer:Server;
 		private var screenLeaderboard:Leaderboard;
-		private var screenOptions:Options;
 		
 		public function Game()
 		{
 			super();
-			this.addEventListener(/*starling.events.*/Event.ADDED_TO_STAGE, onAddedToStage);	
+			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);	
 		}
 		
 		private function onAddedToStage(event:Event):void
@@ -35,22 +32,15 @@ package
 			
 			this.addEventListener(events.NavigationEvent.CHANGE_SCREEN, onChangeScreen);
 			
-			screenOnePlayer = new OnePlayer();
+			screenMultiplayer = new Multiplayer();
+			screenSingleplayer = new Singleplayer();
 			screenTwoPlayer = new Server();
-			screenLeaderboard = new Leaderboard();
-			screenOptions = new Options();
-			//screenInGame.disposeTemporarily();
-			//this.addChild(screenInGame);
-			
+			screenLeaderboard = new Leaderboard();			
 			screenWelcome = new Welcome;
+			
 			this.addChild(screenWelcome);
 			screenWelcome.initialize();
-			
-			
-			screenLeaderboard = new Leaderboard;
-			this.addChild(screenLeaderboard);
-			//screenLeaderboard.initialize();
-			
+
 			//	Starling.multitouchEnabled = true;		
 			//	mStarling = new Starling(Game, stage);
 			//	mStarling.simulateMultitouch = true;
@@ -61,21 +51,17 @@ package
 		{
 			switch(event.params.id)
 			{		
-				case "onePlayer":
+				case "multiplayer":
 					this.removeChild(screenWelcome);
-					this.addChild(screenOnePlayer);
+					this.addChild(screenMultiplayer);
 					break;
-				case "twoPlayer":
+				case "singlePlayer":
 					this.removeChild(screenWelcome);
-					this.addChild(screenTwoPlayer);
+					this.addChild(screenSingleplayer);
 					break;
 				case "leaderboard":
 					this.removeChild(screenWelcome);
 					this.addChild(screenLeaderboard);
-					break;
-				case "options":
-					this.removeChild(screenWelcome);
-					this.addChild(screenOptions);
 					break;
 				/*	case "gameOver":
 				screenInGame.disposeTemporarily();
