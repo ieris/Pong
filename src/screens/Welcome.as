@@ -56,12 +56,8 @@ package screens
 			optionsButton.y = stage.stageHeight/2 + (onePlayerButton.height * 2 + 10);
 			optionsButton.downState = Assets.getTexture("OptionsButton");
 			this.addChild(optionsButton);
-			
-			ballSelector = new Image(Assets.getTexture("BallSelector"));
-			ballSelector.x = stage.stageWidth/2 - onePlayerButton.width/2 - ballSelector.width;
-			ballSelector.y = onePlayerButton.y - ballSelector.height/4;
-			this.addChild(ballSelector);
 		}
+
 		
 		public function onButtonClick(event:Event):void
 		{

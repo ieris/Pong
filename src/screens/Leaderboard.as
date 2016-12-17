@@ -2,7 +2,6 @@ package screens
 {
 	import com.adobe.serialization.json;
 	
-	import flash.events.Event;
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
@@ -21,9 +20,13 @@ package screens
 	import flash.ui.Mouse;
 	
 	import starling.display.Sprite;
+	import starling.events.Event;
 	
 	public class Leaderboard extends Sprite
 	{	
+		private var player:OnePlayer = new OnePlayer();
+		private var myPaddlePosition:int;
+		private var multiplayer:OnePlayer = new OnePlayer();
 		private var loader:URLLoader;
 		private var textInput:TextField = new TextField();
 		private var textOutput:TextField = new TextField();
@@ -33,9 +36,71 @@ package screens
 		
 		public function Leaderboard()
 		{				
+			
+			//this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			
 			loader = new URLLoader();
 			configureListeners(loader);
 			
+			//trace("leaderboard player : " + player.playerScore);
+			//trace("leaderboard pc : " + player.pcScore);
+
+			
+			//this.addChild(multiplayer);
+			
+			/*var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
+			var url:String = "http://http://iveta.coventry.domains/testingServerConnection.html";
+			var urlRequest:URLRequest = new URLRequest(url);
+			var variables:URLVariables = new URLVariables();
+			urlRequest.method = URLRequestMethod.POST;
+			urlRequest.requestHeaders.push(header);
+			
+			variables.ball_x_position = 0;
+			variables.ball_y_position = 0;
+			variables.player_one_y_position = 0;
+			variables.player_two_y_position = 0;
+			
+			urlRequest.data = variables;
+			
+			try
+			{
+				loader.load(urlRequest);
+			}
+			catch(error:Error)
+			{
+				trace("Unable to load the data from the leaderboard");
+			}
+			
+			serverSocket.addEventListener(Event.CONNECT,socketConnected);
+			serverSocket.addEventListener(ProgressEvent.SOCKET_DATA,socketData);
+			serverSocket.connect(ip, port);*/
+			
+			//Add in variables that are collected from the game
+			//Include input data so the player can create a new account
+			//Set paddle position in EnterFrame function (connection lost af
+			//When user clicks on "Multiplayer" the message "establishing connection" appears
+			//If connection is established - "connected" or if not "could not establish connection"
+			
+			// connect to server
+			// get a message that you are connected
+			// get list of players available
+			// send a match message
+			// receive you are matched
+			// you receive player has joined
+			// wait for connection
+			// when game is ready, you receive you can play
+			// you receive the game has started
+			// if playter quits
+			// if player offline
+			// send paddle and who scored
+			
+			// visualizing:
+			//
+			
+			//Check the data you receive is what you expect. For example if the paddle position can only be in range of 0 - 500, anything outside of this is not a valid value.
+			//Leaderboard[0]["Name"] - use a JSON parser in built in as3 [array size]
+			//Set the code to be Observer, Controller, Singleton
+
 			
 			// ------------------------------------- POST REQUEST ----------------------------------------- //
 			/*var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
@@ -96,6 +161,14 @@ package screens
 			//textInput.addEventListener(TextEvent. TEXT_INPUT, newPlayer);			
 		}
 
+		private function onEnterFrame(event:Event):void
+		{
+			multiplayer.getPlayerScore();
+			multiplayer.getPCScore();
+			
+			trace(multiplayer.getPCScore());
+		}
+		
 		private function configureListeners(dispatcher:IEventDispatcher):void
 		{
 			dispatcher.addEventListener(Event.COMPLETE, complete);

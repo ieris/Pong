@@ -3,12 +3,15 @@ package
 	//Screens, onChange screen cases 'play'
 	import events.NavigationEvent;		
 	import screens.OnePlayer;
-	import screens.TwoPlayer;
+	//import screens.TwoPlayer;
 	import screens.Leaderboard;
 	import screens.Options;
 	import screens.Welcome;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import screens.Server;
+
+	//import flash.events.Event;
 	
 	//{"Username":"Rahul","Country":"IN","Scored":8,"Conceded":2}
 	
@@ -16,14 +19,14 @@ package
 	{
 		private var screenWelcome:Welcome;
 		private var screenOnePlayer:OnePlayer;
-		private var screenTwoPlayer:TwoPlayer;
+		private var screenTwoPlayer:Server;
 		private var screenLeaderboard:Leaderboard;
 		private var screenOptions:Options;
 		
 		public function Game()
 		{
 			super();
-			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);	
+			this.addEventListener(/*starling.events.*/Event.ADDED_TO_STAGE, onAddedToStage);	
 		}
 		
 		private function onAddedToStage(event:Event):void
@@ -33,7 +36,7 @@ package
 			this.addEventListener(events.NavigationEvent.CHANGE_SCREEN, onChangeScreen);
 			
 			screenOnePlayer = new OnePlayer();
-			screenTwoPlayer = new TwoPlayer();
+			screenTwoPlayer = new Server();
 			screenLeaderboard = new Leaderboard();
 			screenOptions = new Options();
 			//screenInGame.disposeTemporarily();
@@ -42,6 +45,11 @@ package
 			screenWelcome = new Welcome;
 			this.addChild(screenWelcome);
 			screenWelcome.initialize();
+			
+			
+			screenLeaderboard = new Leaderboard;
+			this.addChild(screenLeaderboard);
+			//screenLeaderboard.initialize();
 			
 			//	Starling.multitouchEnabled = true;		
 			//	mStarling = new Starling(Game, stage);
@@ -57,10 +65,10 @@ package
 					this.removeChild(screenWelcome);
 					this.addChild(screenOnePlayer);
 					break;
-				/*case "twoPlayer":
+				case "twoPlayer":
 					this.removeChild(screenWelcome);
 					this.addChild(screenTwoPlayer);
-					break;*/
+					break;
 				case "leaderboard":
 					this.removeChild(screenWelcome);
 					this.addChild(screenLeaderboard);

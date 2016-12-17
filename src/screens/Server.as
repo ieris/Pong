@@ -1,122 +1,127 @@
 package screens
 {
-	import flash.display.Sprite;
-	import flash.events.DataEvent;
 	import flash.events.Event;
-	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.ServerSocketConnectEvent;
+	import flash.net.ServerSocket;
 	import flash.net.Socket;
-	import flash.net.URLLoader;
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
 	import flash.utils.ByteArray;
-	import flash.net.URLRequest;
-	import flash.net.URLRequestHeader;
-	import flash.net.URLRequestMethod;
-	import flash.net.URLVariables;
+	
+	import starling.display.Sprite;
 	
 	public class Server extends Sprite
 	{	
-		private var loader:URLLoader
-		private var serverSocket:Socket;
-		private var hostName:String = "localhost";
-		private var port:uint = 5656;
-		//private var ip:String = "127.0.0.1";
-		private var ip:String = "46.101.88.96";
+		private var myPaddlePosition:int;
+		private var socket:Socket;
+		private var multiplayer:OnePlayer = new OnePlayer();
+		private var serverSocket:ServerSocket;
+		private var clientSockets:Array = new Array(); 
+		private var port:uint = 53000;
+		private var ip:String = "127.0.0.1";
 		
+		//Creating simple game to focus on functionality
+		//Pong is a real-time which meant that the game had to constantly send data from the game to the server. 
+		//Communicating with leaderboard was simple
+		//For authentification purposes, the desicion was made to use headers as it stores a token key. 
+		//To create a secure communication channel between the game and the leaderboard headers were used. These headers can hold token keys
+		//which are set in the game code. secure data was sent over
+		//HTTP Requests were sent out to the leaderboard
 		public function Server()
 		{
-			super();
-			
-			serverSocket = new Socket();
-			loader = new URLLoader();
-			configureListeners(loader);
-			
-			var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
-			var url:String = "http://http://iveta.coventry.domains/testingServerConnection.html";
-			var urlRequest:URLRequest = new URLRequest(url);
-			var variables:URLVariables = new URLVariables();
-			urlRequest.method = URLRequestMethod.POST;
-			urlRequest.requestHeaders.push(header);
-			
-			variables.ball_x_position = 0;
-			variables.ball_y_position = 0;
-			variables.player_one_y_position = 0;
-			variables.player_two_y_position = 0;
-			
-			urlRequest.data = variables;
+			/*this.addEventListener(Event.ENTER_FRAME, sendDataToServer);
+			trace(multiplayer.getPaddleYPosition());
 			
 			try
 			{
-				loader.load(urlRequest);
+				serverSocket = new ServerSocket();
+				serverSocket.bind(port, ip);
+				
+				serverSocket.listen();
+				trace("Listening on " + serverSocket.localPort);
 			}
-			catch(error:Error)
+			catch(e:SecurityError)
 			{
-				trace("Unable to load the data from the leaderboard");
-			}
+				trace(e);
+			}*/
 			
-			serverSocket.addEventListener(Event.CONNECT,socketConnected);
-			serverSocket.addEventListener(ProgressEvent.SOCKET_DATA,socketData);
-			serverSocket.connect(ip, port);
+			 
+			socket = new Socket();
+			
+			socket.addEventListener( Event.CONNECT, onConnect );
+			
+			socket.connect( "127.0.0.1", 53000 );
 		}
 		
-		protected function socketConnected(e:Event):void
+		private function onConnect(event:Event):void
 		{
-			trace("client - socket connected");
+			trace( "The socket is now connected..." ); 
 		}
 		
-		protected function socketData(e:ProgressEvent):void
+		public function connectHandler(event:ServerSocketConnectEvent):void 
+		{ 			 
+			//The socket is provided by the event object 
+			var socket:Socket = event.socket as Socket; 
+			clientSockets.push( socket ); 
+			
+			socket.addEventListener( ProgressEvent.SOCKET_DATA, sendDataToServer);
+			
+			//socket.addEventListener( ProgressEvent.SOCKET_DATA, socketDataHandler); 
+			//socket.addEventListener( Event.CLOSE, onClientClose ); 
+			//socket.addEventListener( IOErrorEvent.IO_ERROR, onIOError ); 
+			
+			//Send a connect message 
+			socket.writeUTFBytes("Connected."); 
+			socket.flush(); 
+			
+			trace( "Sending connect message" ); 		
+		}
+		
+		/*public function socketDataHandler(event:ProgressEvent):void 
+		{ 
+			var socket:Socket = event.target as Socket 
+			
+			//Read the message from the socket 
+			var message:String = socket.readUTFBytes( socket.bytesAvailable ); 
+			trace( "Received: " + message); 
+			
+			// Echo the received message back to the sender 
+			message = "Echo -- " + message; 
+			socket.writeUTFBytes( message ); 
+			socket.flush(); 
+			trace( "Sending: " + message ); 
+		} */
+		
+		private function onClientClose( event:Event ):void 
+		{ 
+			trace( "Connection to client closed." ); 
+			//Should also remove from clientSockets array... 
+		}
+		
+		private function onIOError( errorEvent:IOErrorEvent ):void 
+		{ 
+			trace( "IOError: " + errorEvent.text ); 
+		} 
+		
+		private function onClose( event:Event ):void 
+		{ 
+			trace( "Server socket closed by OS." ); 
+		} 
+		
+		private function sendDataToServer(event:ProgressEvent):void
 		{
-			trace("client - socket data");
-			// read the string from the socket
-			trace(serverSocket.readUTF());
+			var positionData:int = multiplayer.getPaddleYPosition();
+			trace("Position data: " + positionData);
+			var socket:Socket = event.target as Socket
+			socket.writeUTFBytes( "1" );
+			socket.writeInt(1);
+			
+			socket.flush();
 		}
-		
-		protected function configureListeners(dispatcher:IEventDispatcher):void
-		{
-			dispatcher.addEventListener(Event.CLOSE, closeHandler);
-			dispatcher.addEventListener(Event.CONNECT, connectHandler);
-			dispatcher.addEventListener(DataEvent.DATA, dataHandler);
-			dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-			dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-			dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-		}
-		
-		private function securityErrorHandler(event:SecurityErrorEvent):void
-		{
-			trace("securityErrorHandler: " + event);			
-		}
-		
-		private function progressHandler(event:ProgressEvent):void
-		{
-			trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);	
-		}
-		
-		private function ioErrorHandler(event:IOErrorEvent):void
-		{
-			trace("ioErrorHandler: " + event);			
-		}
-		
-		private function dataHandler(event:DataEvent):void
-		{
-			trace("dataHandler: " + event);			
-		}
-		
-		private function connectHandler(event:Event):void
-		{
-			trace("connectHandler: " + event);			
-		}
-		
-		private function closeHandler(event:Event):void
-		{
-			trace("closeHandler: " + event);			
-		}
-	
-		
 		/*private function onConnect( event:ServerSocketConnectEvent ):void
 		{
 			serverSocket = event.socket;
@@ -221,5 +226,5 @@ package screens
 			this.addChild( button );
 			return button;
 		} */      
-	
+	}
 }

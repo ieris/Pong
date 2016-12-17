@@ -31,9 +31,8 @@ package screens
 		//private var half_Player_Height:Number = player.height/2;
 		//private var half_Player_Width:Number = player.width/2;
 		
-		
 		//Here we have all of the PC properties
-		private var pcSpeed:int = 4;
+		private var pcSpeed:int = 2.5;
 		private var pc_velocity:int = 0;
 		public var pcScore:int = 0;
 		//private var half_PC_Height:Number = pc.height/2;
@@ -51,12 +50,20 @@ package screens
 		public var playerTxt:TextField;
 		public var pcTxt:TextField;
 		
+		private var space:Boolean = true;
+		
 		public var userName:TextField;
 		
 		//Here we initialize all of the event listeners
 		public function OnePlayer()
 		{
-			super();			
+			super();		
+			
+			player = new Image(Assets.getTexture("PlayerOne"));
+			player.x = player.width;
+			player.y = 200;
+			this.addChild(player);
+			
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
 			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			this.addEventListener(Event.ENTER_FRAME, collision);
@@ -79,18 +86,8 @@ package screens
 		}
 		
 		//Draw assets function
-		private function drawGame():void
+		public function drawGame():void
 		{				
-			/*gameBG = new Image(Assets.getTexture("GameBG"));
-			gameBG.x = 0;
-			gameBG.y = 0;
-			this.addChild(gameBG);
-			*/
-			player = new Image(Assets.getTexture("PlayerOne"));
-			player.x = player.width;
-			player.y = stage.stageHeight/2;
-			this.addChild(player);
-			
 			pc = new Image(Assets.getTexture("PlayerTwo"));
 			pc.x = stage.stageWidth - (2*pc.width);
 			pc.y = stage.stageHeight/2;
@@ -119,8 +116,23 @@ package screens
 			format.font = "Arial";
 			format.color = 0xFF0000;
 			format.size = 10;
-
 		}
+		
+		public function getPaddleYPosition():int
+		{
+			return player.y;
+		}
+		
+		public function getPlayerScore():int
+		{
+			return playerScore;
+		}
+		
+		public function getPCScore():int
+		{
+			return pcScore;
+		}
+			
 		
 		private function collision(event:Event):void
 		{
@@ -151,14 +163,34 @@ package screens
 			// >
 			if (ball.x + ball.width >= stage.stageWidth)
 			{
-				ball_xVelocity *= -1;
-				playerScore += 1;		
+				if(playerScore < 6)
+				{
+					ball_xVelocity *= -1;
+					playerScore += 1;
+					space = false;
+					trace("player : " + playerScore);
+					resetBall();
+				}
+				else
+				{
+					//dispatchEvent gameover
+				}
 			}
-			// <
+				// <
 			else if (ball.x <= 0)
 			{
-				ball_xVelocity *= -1;
-				pcScore += 1;
+				if(pcScore < 6)
+				{
+					ball_xVelocity *= -1;
+					pcScore += 1;
+					trace("pc : " + pcScore);
+					space = false;
+					resetBall();
+				}
+				else
+				{
+					//dispatch event gameover
+				}
 			}
 			// ^
 			else if (ball.y <= 0)
@@ -201,10 +233,9 @@ package screens
 			pc.y += pc_velocity;
 			
 			//Moving the ball around the scene
-			ball.x -= ball_xVelocity;
-			ball.y -= ball_yVelocity;
-				
+			releaseBall();				
 		}
+		
 		
 		private function onKeyPress(event:KeyboardEvent):void
 		{
@@ -219,7 +250,8 @@ package screens
 			}
 			else if(event.keyCode == Keyboard.SPACE)
 			{
-				releaseBall_Player();
+				space = true;
+				releaseBall();
 			}
 		}
 		
@@ -231,22 +263,31 @@ package screens
 			}
 		}
 		
-		private function releaseBall_Player():void
+		private function resetBall():void
 		{
-			ball_xVelocity = playerSpeed;
-			ball_yVelocity = playerSpeed;
+			ball.x = stage.stageWidth/2;
+			ball.y = stage.stageHeight/2;
+			pc.x = stage.stageWidth - (2*pc.width);
+			pc.y = stage.stageHeight/2;
+			player.x = player.width;
+			player.y = stage.stageHeight/2;
 		}
 		
-		private function releaseBall_PC():void
-		{
-			ball_xVelocity = -playerSpeed;
-			ball_yVelocity = -playerSpeed;
-		}
-		
+		//dipatch event reset game / game over
 		private function resetGame():void
 		{
-			ball.x = 350;
-			ball.y = 100;
+			resetBall();
+			pcScore = 0;
+			playerScore = 0;
+		}
+		
+		private function releaseBall():void
+		{
+			if (space == true)
+			{
+				ball.x -= ball_xVelocity;
+				ball.y -= ball_yVelocity;
+			}
 		}
 		
 		//Dispose function
