@@ -11,6 +11,11 @@ import sys.db.TableCreate;
 
 class Table 
 {
+	
+	/**
+	 * This will connect to the database that is created on the Coventry 
+	 * domains website and initialise the connection and the manager.
+	 */
 	public static function connect()
 	{
 		var cnx = Mysql.connect
@@ -27,12 +32,20 @@ class Table
 		Manager.initialize();
 	}
 	
+	/**
+	 * Disconnected from the table by cleaning up the manager  
+	 * and closing the connection.
+	 */
 	public static function disconnect()
 	{
 		Manager.cleanup();
 		Manager.cnx.close();
 	}
 	
+	/**
+	 *  Check if there is a table, if a table does not exist then create
+	 *  a table and print a message that such an action has happened.
+	 */
 	public static function createTable() 
 	{
 		if (!TableCreate.exists(GameData.manager)) 

@@ -14,11 +14,36 @@ import sys.io.File;
 
 class DisplayAPI 
 {
+	
+	
+	/**
+	 * THIS ENTIRE CLASS IS JUST USED FOR MY OWN CUSTOM DEBUGGING. THE GAME ITSELF WILL NEED TO HAVE IT'S
+	 * OWN VISUALISATION. THIS CODE DOES NOT MATTER FOR THE ASSIGNMENT.
+	 */
+	
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
 	public function new() 
 	{
 		
 	}
-
+	
 	public static function convertToHaxeDateTime(s_date:SDateTime):Date 
 	{
 		var t_date:String;

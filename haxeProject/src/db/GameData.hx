@@ -8,6 +8,11 @@ import sys.db.Types;
  * @author Andrew Finlay
  */
 
+ 
+ /**
+ * Class that only declares what types of variables that the player will have.
+ * Ranges from their username to their IP and the date of the submit data.
+ */
 class GameData extends Object
 {
 	public var id:SId;

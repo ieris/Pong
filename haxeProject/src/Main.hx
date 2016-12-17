@@ -17,11 +17,21 @@ import php.Web;
 
 class Main 
 {
+	
+	/**
+	* The main function that the index.php will call.
+	* The function itself only calls the routing function.
+	*/
 	static function main() 
 	{
 		routing();
 	}
 	
+	/**
+	* This function is used to handle all of the HTML requests, it will take the URL and 
+	* and then check for what the user types, for instance, /createTable will call the 
+	* create table functions.
+	*/
 	static function routing()
 	{
 		var d = new Dispatch(Web.getURI(), Web.getParams());
@@ -149,8 +159,7 @@ class Main
 		
 		else if (d.parts[len - 1] == "removeData")
 		{
-			userInputString = userInput.get("query");
-			RemoveDataAPI.deleteData(userInputString);
+			RemoveDataAPI.deleteData();
 		}
 		
 		else if (d.parts[len - 1] == "backupData")

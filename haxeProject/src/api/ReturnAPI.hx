@@ -1,6 +1,7 @@
 package api;
 
 import php.Lib;
+import php.Web;
 import sys.db.Manager;
 import sys.db.Mysql;
 import sys.db.Types;
@@ -19,6 +20,10 @@ class ReturnAPI
 		
 	}
 	
+	/**
+	 * Function that will return a haxe date based of converting a SQL date.
+	 * Take the date as a string and convert it from SDateTime to Date.
+	 */
 	public static function convertToHaxeDateTime(s_date:SDateTime):Date 
 	{
 		var t_date:String;
@@ -28,6 +33,11 @@ class ReturnAPI
 		return Date.fromString(t_date);
 	}
 	
+	/**
+	 * Connect to the database and create a JSON array, pushing back the data
+	 * then print out a stringified version of this data for the game to use.
+	 * The SQL query is just taking all the data from the table.
+	 */
 	public static function returnAll()
 	{
 		var cnx = Mysql.connect
@@ -56,6 +66,12 @@ class ReturnAPI
 		Lib.print(JSON);
 	}
 	
+	/**
+	 * Connect to the database and create a JSON array, pushing back the data
+	 * then print out a stringified version of this data for the game to use.
+	 * The SQL query is just taking all the data from the table, ordering it
+	 * by the score they get and limiting to only the top 10 players
+	 */
 	public static function returnTop10()
 	{
 		var cnx = Mysql.connect
@@ -84,6 +100,12 @@ class ReturnAPI
 		Lib.print(JSON);
 	}
 	
+	/**
+	 * Connect to the database and create a JSON array, pushing back the data
+	 * then print out a stringified version of this data for the game to use.
+	 * The SQL query is returning the data where the country is the user specified
+	 * one from the get params in the main class.
+	 */
 	public static function returnCountry(country:String)
 	{
 		var cnx = Mysql.connect
@@ -112,6 +134,15 @@ class ReturnAPI
 		Lib.print(JSON);
 	}
 	
+	/**
+	 * Connect to the database and create a JSON array, pushing back the data
+	 * then print out a stringified version of this data for the game to use.
+	 * The SQL query is returning the data where the year is the user specified
+	 * one from the get params in the main class. It uses SQL wildcards and LIKE
+	 * to find the correct year/date. If the user specified string is "now", then
+	 * the database will return all the data from the current year, otherwise use
+	 * the custom inputted year.
+	 */
 	public static function returnYear(year:String)
 	{
 		var cnx = Mysql.connect
@@ -152,6 +183,17 @@ class ReturnAPI
 		Lib.print(JSON);
 	}
 	
+	/**
+	 * Connect to the database and create a JSON array, pushing back the data
+	 * then print out a stringified version of this data for the game to use.
+	 * The SQL query is returning the data where the year is the user specified
+	 * one from the get params in the main class. It uses SQL wildcards and LIKE
+	 * to find the correct month/date. If the user specified string is "now", then
+	 * the database will return all the data from the current month, otherwise use
+	 * the custom inputted month. The if statements check if the value inputted is
+	 * less than 0 to then put the 0 before the input. So "2" will come out as "02"
+	 * as this is how SQL stores the dates.
+	 */
 	public static function returnMonth(year:String, month:String)
 	{
 		var cnx = Mysql.connect
@@ -216,6 +258,13 @@ class ReturnAPI
 		Lib.print(JSON);
 	}
 	
+	/**
+	 * Connect to the database and create a JSON array, pushing back the data
+	 * then print out a stringified version of this data for the game to use.
+	 * The SQL query is returning the data where the date/time is between the 
+	 * date today - 7 days and the day today. This gives the data from the current
+	 * week.
+	 */
 	public static function returnWeek()
 	{
 		var cnx = Mysql.connect
@@ -232,7 +281,7 @@ class ReturnAPI
 		var arrayOfRows = new Array();
 		var data = {leaderboardData:arrayOfRows};
 		
-		var req = cnx.request("SELECT * FROM GameData WHERE ts BETWEEN '" + Date.fromTime(Date.now().getTime()-7*24*3600*1000).toString() + "' AND '" + Date.now().toString() + "' ORDER by scoreDifference DESC LIMIT 10");
+		var req = cnx.request("SELECT * FROM GameData WHERE ts BETWEEN '" + Date.fromTime(Date.now().getTime()-7*24*3600*1000) + "' AND '" + Date.now() + "' ORDER by scoreDifference DESC LIMIT 10");
 		
 		for (row in req)
 		{
@@ -244,6 +293,17 @@ class ReturnAPI
 		Lib.print(JSON);
 	}
 	
+	/**
+	 * Connect to the database and create a JSON array, pushing back the data
+	 * then print out a stringified version of this data for the game to use.
+	 * The SQL query is returning the data where the day is the user specified
+	 * one from the get params in the main class. It uses SQL wildcards and LIKE
+	 * to find the correct day/date. If the user specified string is "now", then
+	 * the database will return all the data from today, otherwise use the custom
+	 * day. The if statements check if the value input is less than 0, if it is, add
+	 * a 0 before the day so that it will return the date correct. This is due to the
+	 * fact that that SQL stores "2" as "02".
+	 */
 	public static function returnDay(year:String, month:String, day:String)
 	{
 		var cnx = Mysql.connect
@@ -356,6 +416,14 @@ class ReturnAPI
 		Lib.print(JSON);
 	}
 	
+	/**
+	 * Connect to the database and create a JSON array, pushing back the data
+	 * then print out a stringified version of this data for the game to use.
+	 * The SQL query is returning the data where the username is the one that
+	 * is custom input and also where the IP is of the current IP address of 
+	 * the client. This ensure that the database is returning the correct unique
+	 * player.
+	 */
 	public static function returnUsername(username:String)
 	{
 		var cnx = Mysql.connect
@@ -372,7 +440,9 @@ class ReturnAPI
 		var arrayOfRows = new Array();
 		var data = {leaderboardData:arrayOfRows};
 		
-		var req = cnx.request("SELECT * FROM GameData WHERE Username='" + username + "' ORDER by scoreDifference DESC LIMIT 10");
+		var ip = Web.getClientIP();
+		
+		var req = cnx.request("SELECT * FROM GameData WHERE Username='" + username + "' AND IP='" + ip + "' ORDER by scoreDifference DESC");
 					
 		for (row in req)
 		{

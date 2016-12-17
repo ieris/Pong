@@ -1,4 +1,5 @@
 package api;
+
 import db.GameData;
 import db.Table;
 import haxe.Json;
@@ -21,24 +22,12 @@ class BackUpAPI
 		
 	}
 	
-	public static function convertToHaxeDateTime(s_date:SDateTime):Date 
-	{
-		var t_date:String;
-
-		t_date = s_date.getFullYear() + "-" + (s_date.getMonth() + 1) + "-" + s_date.getDate() + " " + s_date.getHours() + ":" + s_date.getMinutes() + ":" + s_date.getSeconds();
-
-		return Date.fromString(t_date);
-	}
-	
-	public static function convertToSQLDateTime(h_date:Date):SDateTime
-	{
-		var t_date:String;
-		
-		t_date = h_date.getFullYear() + "-" + (h_date.getMonth() + 1) + "-" + h_date.getDate() + " " + h_date.getHours() + ":" + h_date.getMinutes() + ":" + h_date.getSeconds();
- 
-		return cast(t_date, SDateTime);
-	}
-	
+	/**
+	 * To backup the data, a connection is made to the database, and the declaration of a JSON array is made,
+	 * the SQL query gets all the data from the table and then all of the data in that table is then pushed back
+	 * into the array. This JSON array is then stringified and saved locally as "backup.json". This will save the
+	 * file in the Coventry.domains file manager where the index.php file is. A confirmation message is then printed.
+	 */
 	public static function backupData()
 	{
 		var cnx = Mysql.connect
@@ -64,15 +53,19 @@ class BackUpAPI
 		
 		JSON = Json.stringify(data);
 		
-		Lib.print(JSON);
-		
 		var filePath = "backup.json";
 		File.saveContent(filePath, JSON);
 		
-		Lib.print("<h2><br>Backup file has been created</h2>");
+		Lib.print("<h2>Backup file created</h2>");
 
 	}
 	
+	/**
+	 * To restore the data, first the file path of the file is declared along with the JSON of a dynamic type to be able 
+	 * to get the length. Another HTTP header authentication is implemented like before. If the token is accepted and the
+	 * file exists, then take the length of the JSON array and iterate from 0 to the length to ensure that all of the data
+	 * from the JSON file is inserted into the database. Some checks and error messages are then printed.
+	 */
 	public static function restoreData()
 	{
 		var filePath = "backup.json";
@@ -89,7 +82,6 @@ class BackUpAPI
 				json = Json.parse(value);
 				
 				var len:Int = json.leaderboardData.length;
-				Lib.print("<h2>" + json.leaderboardData.length + " pieces of data found</h2>");
 				
 				Table.connect();
 				
@@ -111,7 +103,7 @@ class BackUpAPI
 			
 				Table.disconnect();
 					
-				Lib.print("<h2>Restored the backup data</h2>");
+				Lib.print("<h2>Restored data</h2>");
 
 			}
 			else
