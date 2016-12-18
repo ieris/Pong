@@ -3,6 +3,7 @@ package
 	//Screens, onChange screen cases 'play'
 	import events.NavigationEvent;
 	
+	import screens.Gameover;
 	import screens.Leaderboard;
 	import screens.Multiplayer;
 	import screens.Server;
@@ -19,6 +20,7 @@ package
 		private var screenSingleplayer:Singleplayer;
 		private var screenTwoPlayer:Server;
 		private var screenLeaderboard:Leaderboard;
+		private var screenGameover:Gameover;
 		
 		public function Game()
 		{
@@ -36,7 +38,8 @@ package
 			screenSingleplayer = new Singleplayer();
 			screenTwoPlayer = new Server();
 			screenLeaderboard = new Leaderboard();			
-			screenWelcome = new Welcome;
+			screenWelcome = new Welcome();
+			screenGameover = new Gameover();
 			
 			this.addChild(screenWelcome);
 			screenWelcome.initialize();
@@ -53,21 +56,36 @@ package
 			{		
 				case "multiplayer":
 					this.removeChild(screenWelcome);
+					screenMultiplayer = new Multiplayer();
 					this.addChild(screenMultiplayer);
 					break;
 				case "singlePlayer":
 					this.removeChild(screenWelcome);
 					this.addChild(screenSingleplayer);
+					screenSingleplayer = new Singleplayer();
 					break;
 				case "leaderboard":
 					this.removeChild(screenWelcome);
+					screenLeaderboard = new Leaderboard();
 					this.addChild(screenLeaderboard);
 					break;
-				/*	case "gameOver":
-				screenInGame.disposeTemporarily();
-				screenWelcome.disposeTemporarily();
-				screenGameOver.initialize();
-				break; */
+				case "welcome":
+					this.removeChild(screenLeaderboard);
+					this.removeChild(screenMultiplayer);
+					this.removeChild(screenSingleplayer);
+					this.removeChild(screenGameover);
+					screenWelcome = new Welcome();
+					this.addChild(screenWelcome);
+					break;
+				case "game over":
+					trace("case game over");
+					this.removeChild(screenLeaderboard);
+					this.removeChild(screenMultiplayer);
+					this.removeChild(screenSingleplayer);
+					this.removeChild(screenWelcome);
+					screenGameover = new Gameover();
+					this.addChild(screenGameover);
+				break;
 			}
 		}
 	}

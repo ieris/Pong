@@ -64,6 +64,14 @@ package
 		[Embed(source="../Assets/Name3.png")]
 		public static const Name3:Class;
 		
+		//Game over screen
+		
+		[Embed(source="../Assets/GameOver.png")]
+		public static const GameOver:Class;
+		
+		[Embed(source="../Assets/MainMenuButton.png")]
+		public static const MainMenuButton:Class;
+		
 		private static var gameTextures:Dictionary = new Dictionary();
 		
 		public static function getTexture(name:String):Texture

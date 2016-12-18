@@ -71,18 +71,21 @@ package screens
 			name1Button.y = stage.stageHeight/2 - multiplayerButton.height - 200;
 			name1Button.downState = Assets.getTexture("Name1");
 			name1Button.name = "Robert";
+			name1Button.visible = true;
 			
 			name2Button = new Button(Assets.getTexture("Name2"));
 			name2Button.x = stage.stageWidth/2 - multiplayerButton.width/2;
 			name2Button.y = stage.stageHeight/2 - multiplayerButton.height -120;
 			name2Button.downState = Assets.getTexture("Name2");
 			name2Button.name = "Sam";
+			name2Button.visible = true;
 			
 			name3Button = new Button(Assets.getTexture("Name3"));
 			name3Button.x = stage.stageWidth/2 - multiplayerButton.width/2;
 			name3Button.y = stage.stageHeight/2 - multiplayerButton.height-40;
 			name3Button.downState = Assets.getTexture("Name3");
 			name3Button.name = "Dolores";
+			name3Button.visible = true;
 			
 			//Log in buttons
 			
@@ -90,6 +93,7 @@ package screens
 			logInButton.x = stage.stageWidth/2 - multiplayerButton.width/2;
 			logInButton.y = stage.stageHeight/2 + multiplayerButton.height+20;
 			logInButton.downState = Assets.getTexture("LogInButton");
+			logInButton.visible = true;
 			
 			this.addEventListener(Event.TRIGGERED, onButtonClick);			
 		}
@@ -153,9 +157,14 @@ package screens
 			}
 		}
 		
-		public function logIn(userName:TextField)
+		public function logIn(userName:TextField):void
 		{
 			trace("you have logged in as :" + userName.text);
+			name1Button.visible = false;
+			name2Button.visible = false;
+			name3Button.visible = false;
+			logInButton.visible = false;
+			
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "multiplayer"}, true));
 		}
 		

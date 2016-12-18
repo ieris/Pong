@@ -1,19 +1,16 @@
 package screens
 {
-	import flash.events.HTTPStatusEvent;
-	import flash.events.IEventDispatcher;
-	import flash.events.IOErrorEvent;
-	import flash.events.ProgressEvent;
-	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
-	import flash.net.URLVariables;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
 	
+	import events.NavigationEvent;
+	
+	import starling.display.Button;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -36,7 +33,7 @@ package screens
 		public var playerScore:int = 0;
 		
 		//Here we have all of the PC properties
-		private var pcSpeed:int = 2.5;
+		private var pcSpeed:int = 2;
 		private var pc_velocity:int = 0;
 		public var pcScore:int = 0;
 		
@@ -58,6 +55,8 @@ package screens
 		private var country:TextField = new TextField();
 		private var finalScore:int;
 		private var concededScore:int;
+		
+		private var mainMenuButton:Button;
 		
 		//Here we initialize all of the event listeners
 		public function Multiplayer()
@@ -120,7 +119,12 @@ package screens
 			format.color = 0xFF0000;
 			format.size = 10;
 			
-			
+			mainMenuButton = new Button(Assets.getTexture("MainMenuButton"));
+			mainMenuButton.x = stage.stageWidth/2 - mainMenuButton.width/2;
+			mainMenuButton.y = 20;
+			mainMenuButton.downState = Assets.getTexture("MainMenuButton");
+			this.addChild(mainMenuButton);
+			this.addEventListener(Event.TRIGGERED, onButtonClick);
 		}
 		
 		//Get data to send to the server and leaderboard
@@ -180,8 +184,7 @@ package screens
 				else
 				{
 					resetGame();
-					resetBall();
-					//gameover
+					sendData();
 				}
 			}
 				// <
@@ -197,9 +200,8 @@ package screens
 				}
 				else
 				{
-					resetGame();
+					resetGame();								
 					sendData();
-					//game over
 				}
 			}
 			// ^
@@ -293,6 +295,11 @@ package screens
 			resetBall();
 			pcScore = 0;
 			playerScore = 0;
+			ball.visible = false;
+			player.visible = false;
+			pc.visible = false;
+			
+			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "game over"}, true));
 		}
 		
 		//When space is pressed the ball is released
@@ -319,7 +326,7 @@ package screens
 		
 		//Send data to the leaderboard
 		//Include variables
-		private function sendData()
+		private function sendData():void
 		{
 			trace("sending score");
 			userName = welcome.getPlayerName();
@@ -342,7 +349,7 @@ package screens
 		}
 		
 		//Get data from the leaderboard
-		private function getData()
+		private function getData():void
 		{
 			var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
 			var url:String = "http://andrew.coventry.domains//returnAll";
@@ -361,7 +368,7 @@ package screens
 		}
 		
 		//Delete data from the leaderboard
-		private function deleteData()
+		private function deleteData():void
 		{
 			var header:URLRequestHeader = new URLRequestHeader("token", "$/>?&ReqEQjs7ih");
 			var url:String = "http://andrew.coventry.domains/removeData?query=id=20";
@@ -379,40 +386,15 @@ package screens
 			}
 		}
 		
-		//Leaderboard listeners
-		/*private function configureListeners(dispatcher:IEventDispatcher):void
+		public function onButtonClick(event:Event):void
 		{
-			dispatcher.addEventListener(Event.COMPLETE, complete);
-			dispatcher.addEventListener(Event.OPEN, openHandler);
-			dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-			dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-			dispatcher.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
-			dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+			var buttonClicked:Button = event.target as Button;
+			if ((buttonClicked as Button == mainMenuButton))
+			{
+				trace("pressed main menu button");
+				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "welcome"}, true));
+				this.removeEventListener(Event.TRIGGERED, onButtonClick);		
+			}
 		}
-		
-		private function complete(event:Event):void {
-			var loader:URLLoader = URLLoader(event.target);
-			trace("completeHandler: " + loader.data);
-		}
-		
-		private function openHandler(event:Event):void {
-			trace("openHandler: " + event);
-		}
-		
-		private function progressHandler(event:ProgressEvent):void {
-			trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
-		}
-		
-		private function securityErrorHandler(event:SecurityErrorEvent):void {
-			trace("securityErrorHandler: " + event);
-		}
-		
-		private function httpStatusHandler(event:HTTPStatusEvent):void {
-			trace("httpStatusHandler: " + event);
-		}
-		
-		private function ioErrorHandler(event:IOErrorEvent):void {
-			trace("ioErrorHandler: " + event);
-		}*/
 	}
 }
