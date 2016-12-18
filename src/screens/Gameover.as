@@ -16,7 +16,7 @@ package screens
 		{
 			super();			
 			trace("game over screen");
-			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);			
+			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);			
 		}
 		
 		private function onAddedToStage():void
@@ -28,14 +28,14 @@ package screens
 		private function drawScene():void
 		{
 			gameOverImage = new Image(Assets.getTexture("GameOver"));
-			gameOverImage.x = stage.stageWidth/2;
+			gameOverImage.x = stage.stageWidth/2 - gameOverImage.width/2;
 			gameOverImage.y = 200;
 			gameOverImage.visible = true;
 			this.addChild(gameOverImage);
 			
 			mainMenuButton = new Button(Assets.getTexture("MainMenuButton"));
 			mainMenuButton.x = stage.stageWidth/2 - mainMenuButton.width/2;
-			mainMenuButton.y = stage.stageHeight - 200;
+			mainMenuButton.y = stage.stageHeight/2;
 			mainMenuButton.downState = Assets.getTexture("MainMenuButton");
 			mainMenuButton.visible = true;
 			this.addChild(mainMenuButton);

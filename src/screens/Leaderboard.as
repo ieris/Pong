@@ -1,128 +1,40 @@
 package screens
 {
-	import com.adobe.serialization.json;
-	
+	import flash.events.Event;
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
-	import flash.events.TextEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
-	import flash.net.URLVariables;
-	import flash.text.TextField;
-	import flash.text.TextFieldType;
-	import flash.text.TextFormat;
-	import flash.ui.Mouse;
 	
 	import starling.display.Sprite;
-	import starling.events.Event;
+	import starling.text.TextField;
 	
 	public class Leaderboard extends Sprite
 	{	
-		private var welcome:Welcome = new Welcome();
-		private var player:Multiplayer = new Multiplayer();
-		private var myPaddlePosition:int;
-		private var multiplayer:Multiplayer = new Multiplayer();
 		private var loader:URLLoader;
-		private var textInput:TextField = new TextField();
-		private var textOutput:TextField = new TextField();
-		private var userName:String = new String();
-		private var country:String = new String();
-		private var suggestedText:String = "Type your text here.";
+		private var userName:TextField;
+		private var country:TextField;
+		private var rank:TextField;
+		private var score:TextField
 		
 		public function Leaderboard()
 		{				
+			super();
 			
-			//this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			
-			loader = new URLLoader();
+			loader = new URLLoader();	
 			configureListeners(loader);
 			
-			//trace("leaderboard player : " + player.playerScore);
-			//trace("leaderboard pc : " + player.pcScore);
-						
-			//this.addChild(multiplayer);
+			//Get data from the leaderboard by wrapping a token in a header and sending it over
 			
-			/*var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
-			var url:String = "%22Username%22:%22Alice%22,%22Country%22:%22USA%22,%22Scored%22:12,%22Conceded%22:2";
-			var urlRequest:URLRequest = new URLRequest(url);
-			//var variables:URLVariables = new URLVariables();
-			urlRequest.method = URLRequestMethod.POST;
-			urlRequest.requestHeaders.push(header);
-			
-			//variables.ball_x_position = 0;
-			//variables.ball_y_position = 0;
-			//variables.player_one_y_position = 0;
-			//variables.player_two_y_position = 0;
-			
-			//urlRequest.data = variables;
-			
-			try
-			{
-				loader.load(urlRequest);
-			}
-			catch(error:Error)
-			{
-				trace("Unable to load the data from the leaderboard");
-			}*/
-			
-			//serverSocket.addEventListener(Event.CONNECT,socketConnected);
-			//serverSocket.addEventListener(ProgressEvent.SOCKET_DATA,socketData);
-			//serverSocket.connect(ip, port);*/
-			
-			//Add in variables that are collected from the game
-			//Include input data so the player can create a new account
-			//Set paddle position in EnterFrame function (connection lost af
-			//When user clicks on "Multiplayer" the message "establishing connection" appears
-			//If connection is established - "connected" or if not "could not establish connection"
-			
-			// connect to server
-			// get a message that you are connected
-			// get list of players available
-			// send a match message
-			// receive you are matched
-			// you receive player has joined
-			// wait for connection
-			// when game is ready, you receive you can play
-			// you receive the game has started
-			// if playter quits
-			// if player offline
-			// send paddle and who scored
-			
-			// visualizing:
-			//
-			
-			//Check the data you receive is what you expect. For example if the paddle position can only be in range of 0 - 500, anything outside of this is not a valid value.
-			//Leaderboard[0]["Name"] - use a JSON parser in built in as3 [array size]
-			//Set the code to be Observer, Controller, Singleton
-
-			
-			// ------------------------------------- POST REQUEST ----------------------------------------- //
-			/*var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
-			var url:String = "http://andrew.coventry.domains/parseData?data={%22Username%22:%22Rober%22,%22Country%22:%22West Virginia%22,%22Scored%22:400,%22Conceded%22:242}";
-			var urlRequest:URLRequest = new URLRequest(url);	
-			urlRequest.method = URLRequestMethod.POST;
-			urlRequest.requestHeaders.push(header);
-			
-			try
-			{
-				loader.load(urlRequest);
-			}
-			catch(error:Error)
-			{
-				trace("Unable to load the data from the leaderboard");
-			}*/
-			
-			// ------------------------------------- GET REQUEST ----------------------------------------- //
-			
-			/*var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
+			var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
 			var url:String = "http://andrew.coventry.domains//returnWeek";
-			var urlRequest:URLRequest = new URLRequest(url);	
+			var urlRequest:URLRequest = new URLRequest(url);
 			urlRequest.method = URLRequestMethod.GET;
 			urlRequest.requestHeaders.push(header);
 			
@@ -133,44 +45,57 @@ package screens
 			catch(error:Error)
 			{
 				trace("Unable to load the data from the leaderboard");
-			}*/
-			
-			// ---------------------------------- DELETE DATA ------------------------------------------//
-			
-			/*var header:URLRequestHeader = new URLRequestHeader("token", "$/>?&ReqEQjs7ih");
-			var url:String = "http://andrew.coventry.domains/removeData?query=id=20";
-			var urlRequest:URLRequest = new URLRequest(url);	
-			urlRequest.method = URLRequestMethod.POST;
-			urlRequest.requestHeaders.push(header);
-			
-			try
-			{
-				loader.load(urlRequest);
 			}
-			catch(error:Error)
-			{
-				trace("Unable to load the data from the leaderboard");
-			}	*/					
-
-			/*var textFormat:TextFormat = new TextFormat("Arial", 24, 0xFF0000);			
-			textInput = new TextField();
-			textInput.type = TextFieldType.INPUT;
-			textInput.background = true;
-			textInput.border = true;
-			textInput.text = userName;*/
-			//textInput.addEventListener(TextEvent. TEXT_INPUT, newPlayer);			
-		}
-
-		private function onEnterFrame(event:Event):void
-		{
-			multiplayer.getPlayerScore();
-			multiplayer.getPCScore();
 			
-			trace(multiplayer.getPCScore());
+			visualize();
+			//this.addEventListener(flash.events.Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
-		private function configureListeners(dispatcher:IEventDispatcher):void
+		private function onAddedToStage(event:flash.events.Event):void
+		{		
+			visualize();
+			this.removeEventListener(flash.events.Event.ADDED_TO_STAGE, onAddedToStage);
+		}
+		
+		private function visualize():void
 		{
+			rank = new TextField(200, 200, "Rank");
+			rank.x = 640;
+			rank.y = 60;
+			rank.fontSize = 30;
+			rank.color = 0xffffff;
+			this.addChild(rank);
+			
+			userName = new TextField(200, 200, "Username");
+			userName.x = 1280;
+			userName.y = 60;
+			userName.fontSize = 30;
+			userName.color = 0xffffff;
+			this.addChild(userName);
+			
+			country = new TextField(200, 200, "Country");
+			country.x = 1920;
+			country.y = 60;
+			country.fontSize = 30;
+			country.color = 0xffffff;
+			this.addChild(country);
+			
+			score = new TextField(200, 200, "Score");
+			score.x = 2560;
+			score.y = 60;
+			score.fontSize = 30;
+			score.color = 0xffffff;
+			this.addChild(score);
+			
+			//var format:TextFormat = new TextFormat();
+			//format.font = "Arial";
+			//format.color = 0xFF0000;
+			//format.size = 40;
+		}		
+		
+		private function configureListeners(dispatcher:flash.events.IEventDispatcher):void
+		{
+			//trace("completeHandler: " + loader.data);
 			dispatcher.addEventListener(Event.COMPLETE, complete);
 			dispatcher.addEventListener(Event.OPEN, openHandler);
 			dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
@@ -178,29 +103,37 @@ package screens
 			dispatcher.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
 			dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 		}
-		private function complete(event:Event):void {
+		private function complete(event:flash.events.Event):void {
 			var loader:URLLoader = URLLoader(event.target);
 			trace("completeHandler: " + loader.data);
+			
+			var info:Object = JSON.parse(loader.data);
+			trace("username is: " + info["leaderboardData"][0]["Username"]);
 		}
 		
-		private function openHandler(event:Event):void {
+		private function openHandler(event:flash.events.Event):void {
 			trace("openHandler: " + event);
 		}
 		
-		private function progressHandler(event:ProgressEvent):void {
+		private function progressHandler(event:flash.events.ProgressEvent):void {
 			trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
 		}
 		
-		private function securityErrorHandler(event:SecurityErrorEvent):void {
+		private function securityErrorHandler(event:flash.events.SecurityErrorEvent):void {
 			trace("securityErrorHandler: " + event);
 		}
 		
-		private function httpStatusHandler(event:HTTPStatusEvent):void {
+		private function httpStatusHandler(event:flash.events.HTTPStatusEvent):void {
 			trace("httpStatusHandler: " + event);
 		}
 		
-		private function ioErrorHandler(event:IOErrorEvent):void {
+		private function ioErrorHandler(event:flash.events.IOErrorEvent):void {
 			trace("ioErrorHandler: " + event);
+		}
+		
+		private function onEnterFrame(event:flash.events.Event):void
+		{
+
 		}
 	}
 }

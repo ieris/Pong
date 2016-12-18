@@ -27,11 +27,6 @@
 			<location>C:/Users/Iveta/Desktop/Hi-ReS-Stats-master/src</location>
 		</link>
 		<link>
-			<name>[source path] json</name>
-			<type>2</type>
-			<location>C:/Users/Iveta/Downloads/as3corelib-master/as3corelib-master/src/com/adobe/serialization/json</location>
-		</link>
-		<link>
 			<name>[source path] libs</name>
 			<type>2</type>
 			<location>C:/Program Files/Adobe/Adobe Flash CC 2015/Common/Configuration/ActionScript 3.0/flex_sdk/4.5.0/frameworks/libs</location>

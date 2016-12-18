@@ -122,6 +122,7 @@ package screens
 			
 			socket.flush();
 		}
+	}}
 		/*private function onConnect( event:ServerSocketConnectEvent ):void
 		{
 			serverSocket = event.socket;
@@ -211,20 +212,5 @@ package screens
 			
 			return input;
 		}
-		
-		private function createTextButton( x:int, y:int, label:String, clickHandler:Function ):TextField
-		{
-			var button:TextField = new TextField();
-			button.htmlText = "<u><b>" + label + "</b></u>";
-			button.type = TextFieldType.DYNAMIC;
-			button.selectable = false;
-			button.width = 180;
-			button.x = x;
-			button.y = y;
-			button.addEventListener( MouseEvent.CLICK, clickHandler );
-			
-			this.addChild( button );
-			return button;
-		} */      
 	}
 }

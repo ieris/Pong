@@ -36,7 +36,7 @@ package screens
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);			 	
 		}
 	
-		public function onAddedToStage(event:Event):void
+		private function onAddedToStage(event:Event):void
 		{
 			//draw the welcome screen
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
@@ -44,7 +44,7 @@ package screens
 			trace("Welcome screen initialized");
 		}
 		
-		public function drawScreen():void
+		private function drawScreen():void
 		{		
 			multiplayerButton = new Button(Assets.getTexture("MultiplayerButton"));
 			multiplayerButton.x = stage.stageWidth/2 - multiplayerButton.width/2;
@@ -98,7 +98,7 @@ package screens
 			this.addEventListener(Event.TRIGGERED, onButtonClick);			
 		}
 		
-		public function onButtonClick(event:Event):void
+		private function onButtonClick(event:Event):void
 		{
 			var buttonClicked:Button = event.target as Button;
 			if ((buttonClicked as Button == multiplayerButton))
@@ -157,7 +157,7 @@ package screens
 			}
 		}
 		
-		public function logIn(userName:TextField):void
+		private function logIn(userName:TextField):void
 		{
 			trace("you have logged in as :" + userName.text);
 			name1Button.visible = false;
