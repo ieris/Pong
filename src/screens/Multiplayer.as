@@ -3,14 +3,13 @@ package screens
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
-	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
-	import flash.events.TextEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
@@ -55,7 +54,7 @@ package screens
 		private var space:Boolean = true;
 		
 		public var welcome:Welcome = new Welcome();
-		public var playerText:TextField = new TextField();
+		public var userName:TextField = new TextField();
 		private var country:TextField = new TextField();
 		private var finalScore:int;
 		private var concededScore:int;
@@ -66,9 +65,7 @@ package screens
 			super();		
 			//Create a loader for the leaderboard
 			loader = new URLLoader();
-			configureListeners(loader);
-			
-			
+			//configureListeners(loader);			
 			
 			//Add all of the event listeners here		
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
@@ -97,7 +94,8 @@ package screens
 		//Draw assets function
 		public function drawGame():void
 		{		
-			trace(" getPlayerName: " + welcome.getPlayerName().text);				
+			trace(" getPlayerName: " + welcome.getPlayerName().text);
+					
 			player = new Image(Assets.getTexture("PlayerOne"));
 			player.x = player.width;
 			player.y = 200;
@@ -171,7 +169,7 @@ package screens
 			// >
 			if (ball.x + ball.width >= stage.stageWidth)
 			{
-				if(playerScore < 6)
+				if(playerScore < 2)
 				{
 					ball_xVelocity *= -1;
 					playerScore += 1;
@@ -181,13 +179,15 @@ package screens
 				}
 				else
 				{
-					//dispatchEvent gameover
+					resetGame();
+					resetBall();
+					//gameover
 				}
 			}
 				// <
 			else if (ball.x <= 0)
 			{
-				if(pcScore < 6)
+				if(pcScore < 2)
 				{
 					ball_xVelocity *= -1;
 					pcScore += 1;
@@ -197,7 +197,9 @@ package screens
 				}
 				else
 				{
-					//dispatch event gameover
+					resetGame();
+					sendData();
+					//game over
 				}
 			}
 			// ^
@@ -319,16 +321,18 @@ package screens
 		//Include variables
 		private function sendData()
 		{
-			//userName = welcome.getPlayerName();
-			//trace("found name" + userName.text);
+			trace("sending score");
+			userName = welcome.getPlayerName();
+			country.text = "GB";
 			var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
-			var url:String = "http://andrew.coventry.domains/parseData?data={%22Username%22:%22 " + playerText + "%22,%22Country%22:%22" + country.text  + "%22,%22Scored%22:" + playerScore + ",%22Conceded%22:" + pcScore + "}";
+			var url:String = "http://andrew.coventry.domains/parseData?data={%22Username%22:%22 " + userName.text + "%22,%22Country%22:%22" + country.text  + "%22,%22Scored%22:" + playerScore + ",%22Conceded%22:" + pcScore + "}";
 			var urlRequest:URLRequest = new URLRequest(url);	
 			urlRequest.method = URLRequestMethod.POST;
 			urlRequest.requestHeaders.push(header);
 			
 			try
 			{
+				trace("data was successully sent");
 				loader.load(urlRequest);
 			}
 			catch(error:Error)
@@ -376,7 +380,7 @@ package screens
 		}
 		
 		//Leaderboard listeners
-		private function configureListeners(dispatcher:IEventDispatcher):void
+		/*private function configureListeners(dispatcher:IEventDispatcher):void
 		{
 			dispatcher.addEventListener(Event.COMPLETE, complete);
 			dispatcher.addEventListener(Event.OPEN, openHandler);
@@ -409,13 +413,6 @@ package screens
 		
 		private function ioErrorHandler(event:IOErrorEvent):void {
 			trace("ioErrorHandler: " + event);
-		}
-		
-		
-		
-		private function newPlayer(event:TextEvent):void
-		{
-			
-		}
+		}*/
 	}
 }
