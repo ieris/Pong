@@ -1,12 +1,10 @@
 package
 {
 	//Screens, onChange screen cases 'play'
-	import events.NavigationEvent;
-	
+	import events.NavigationEvent;	
 	import screens.Gameover;
 	import screens.Leaderboard;
 	import screens.Multiplayer;
-	import screens.Server;
 	import screens.Singleplayer;
 	import screens.Welcome;
 	
@@ -18,7 +16,6 @@ package
 		private var screenWelcome:Welcome;
 		private var screenMultiplayer:Multiplayer;
 		private var screenSingleplayer:Singleplayer;
-		private var screenTwoPlayer:Server;
 		private var screenLeaderboard:Leaderboard;
 		private var screenGameover:Gameover;
 		
@@ -36,7 +33,6 @@ package
 			
 			screenMultiplayer = new Multiplayer();
 			screenSingleplayer = new Singleplayer();
-			screenTwoPlayer = new Server();
 			screenLeaderboard = new Leaderboard();			
 			screenWelcome = new Welcome();
 			screenGameover = new Gameover();

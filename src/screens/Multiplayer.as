@@ -1,8 +1,11 @@
 package screens
 {
-	import flash.events.IOErrorEvent; 
-	import flash.events.ServerSocketConnectEvent;
-	import flash.net.ServerSocket;
+	import flash.events.Event;
+	import flash.events.HTTPStatusEvent;
+	import flash.events.IEventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.events.ProgressEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.net.Socket;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -10,8 +13,7 @@ package screens
 	import flash.net.URLRequestMethod;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
-	import flash.ui.Keyboard;
-	
+	import flash.ui.Keyboard;	
 	import events.NavigationEvent;
 	
 	import starling.display.Button;
@@ -19,7 +21,6 @@ package screens
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.events.KeyboardEvent;
-	import flash.events.ProgressEvent;
 	
 	public class Multiplayer extends Sprite
 	{	
@@ -64,49 +65,35 @@ package screens
 		private var mainMenuButton:Button;
 		
 		//Server variables
-		private var port:uint = 53000;
-		private var ip:String = "127.0.0.1";
-		private var serverSocket:ServerSocket;
 		private var socket:Socket;
-		private var clientSockets:Array = new Array(); 
-		
+		private var IP:String ="127.0.0.1";
+		private var txt:TextField;
+		private var response:String;
+		//private var serverStatus:ByteArray;
+				
 		//Here we initialize all of the event listeners
 		public function Multiplayer()
 		{
-			super();		
 			//Create a loader for the leaderboard
 			loader = new URLLoader();
+			configureLeaderboardListeners(loader);
 			
-			//Create server communication
-			
-			try 
-			{ 
-				// Create the server socket 
-				serverSocket = new ServerSocket(); 
-				
-				// Add the event listener 
-				serverSocket.addEventListener( flash.events.Event.CONNECT, connectHandler ); 
-				serverSocket.addEventListener( flash.events.Event.CLOSE, onClose ); 
-				
-				// Bind to local port 8087 
-				serverSocket.bind( 53000, "127.0.0.1" ); 
-				
-				// Listen for connections 
-				serverSocket.listen(); 
-				trace( "Listening on " + serverSocket.localPort ); 
-				
-			} 
-			catch(e:SecurityError) 
-			{ 
-				trace(e); 
-			} 
-			
+			socket = new Socket();
+			socket.addEventListener(flash.events.Event.CONNECT, onConnected);
+			socket.connect(IP, 5555);
+
 			//Add all of the event listeners here		
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
-			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			this.addEventListener(Event.ENTER_FRAME, collision);
+			this.addEventListener(starling.events.Event.ENTER_FRAME, onEnterFrame);
+			this.addEventListener(starling.events.Event.ENTER_FRAME, collision);
 			this.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			this.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
+		}
+		
+		protected function onConnected(event:flash.events.Event):void
+		{
+			socket.writeUTFBytes("Hello server!");
+			socket.flush();
 		}
 		
 		//Draw assets function
@@ -143,7 +130,7 @@ package screens
 			mainMenuButton.y = 20;
 			mainMenuButton.downState = Assets.getTexture("MainMenuButton");
 			this.addChild(mainMenuButton);
-			this.addEventListener(Event.TRIGGERED, onButtonClick);
+			this.addEventListener(starling.events.Event.TRIGGERED, onButtonClick);
 		}
 		
 		//Get data to send to the server and leaderboard
@@ -163,7 +150,7 @@ package screens
 		}			
 		
 		//Collision function for the paddle and ball (including singleplayer for now ---------!!!!)
-		private function collision(event:Event):void
+		private function collision(event:starling.events.Event):void
 		{			
 			//Restricting the pc from moving beyond the screen
 			if(pc.y <= 0)
@@ -246,7 +233,7 @@ package screens
 		}
 		
 		//Function to call events every second
-		private function onEnterFrame(event:Event):void
+		private function onEnterFrame(event:starling.events.Event):void
 		{
 			
 			//Moving the player
@@ -316,9 +303,9 @@ package screens
 			player.visible = false;
 			pc.visible = false;
 			
-			this.removeEventListener(Event.ENTER_FRAME, gameOver);
+			this.removeEventListener(starling.events.Event.ENTER_FRAME, gameOver);
 			this.removeEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
-			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			this.removeEventListener(starling.events.Event.ENTER_FRAME, onEnterFrame);
 			this.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			this.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "game over"}, true));
@@ -402,63 +389,53 @@ package screens
 			}
 		}
 		
-		public function onButtonClick(event:Event):void
+		public function onButtonClick(event:starling.events.Event):void
 		{
 			var buttonClicked:Button = event.target as Button;
 			if ((buttonClicked as Button == mainMenuButton))
 			{
 				trace("pressed main menu button");
 				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "welcome"}, true));
-				this.removeEventListener(Event.TRIGGERED, onButtonClick);		
+				this.removeEventListener(starling.events.Event.TRIGGERED, onButtonClick);		
 			}
 		}
-		
-		public function connectHandler(event:ServerSocketConnectEvent):void 
-		{ 
-			//The socket is provided by the event object 
-			var socket:Socket = event.socket as Socket; 
-			clientSockets.push( socket ); 
+
+		private function configureLeaderboardListeners(dispatcher:flash.events.IEventDispatcher):void
+		{
+			//trace("completeHandler: " + loader.data);
+			dispatcher.addEventListener(flash.events.Event.COMPLETE, complete);
+			dispatcher.addEventListener(flash.events.Event.OPEN, openHandler);
+			dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+			dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandlerLeaderboard);
+			dispatcher.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
+			dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandlerLeaderboard);
+		}
+		private function complete(event:flash.events.Event):void {
+			var loader:URLLoader = URLLoader(event.target);
+			trace("completeHandler: " + loader.data);
 			
-			socket.addEventListener( ProgressEvent.SOCKET_DATA, socketDataHandler); 
-			socket.addEventListener( Event.CLOSE, onClientClose ); 
-			socket.addEventListener( IOErrorEvent.IO_ERROR, onIOError ); 
-			
-			//Send a connect message 
-			socket.writeUTFBytes("Connected."); 
-			socket.flush(); 
-			
-			trace( "Sending connect message" ); 
-		} 
+			var info:Object = JSON.parse(loader.data);
+			trace("username is: " + info["leaderboardData"][0]["Username"]);
+		}
 		
-		public function socketDataHandler(event:ProgressEvent):void 
-		{ 
-			var socket:Socket = event.target as Socket 
-			
-			//Read the message from the socket 
-			var message:String = socket.readUTFBytes( socket.bytesAvailable ); 
-			trace( "Received: " + message); 
-			
-			// Echo the received message back to the sender 
-			message = "Echo -- " + message; 
-			socket.writeUTFBytes( message ); 
-			socket.flush(); 
-			trace( "Sending: " + message ); 
-		} 
+		private function openHandler(event:flash.events.Event):void {
+			trace("openHandler: " + event);
+		}
 		
-		private function onClientClose( event:Event ):void 
-		{ 
-			trace( "Connection to client closed." ); 
-			//Should also remove from clientSockets array... 
-		} 
+		private function progressHandler(event:flash.events.ProgressEvent):void {
+			trace("progressHandler loaded:" + event.bytesLoaded + " total: " + event.bytesTotal);
+		}
 		
-		private function onIOError( errorEvent:IOErrorEvent ):void 
-		{ 
-			trace( "IOError: " + errorEvent.text ); 
-		} 
+		private function securityErrorHandlerLeaderboard(event:flash.events.SecurityErrorEvent):void {
+			trace("securityErrorHandler: " + event);
+		}
 		
-		private function onClose( event:Event ):void 
-		{ 
-			trace( "Server socket closed by OS." ); 
-		} 
+		private function httpStatusHandler(event:flash.events.HTTPStatusEvent):void {
+			trace("httpStatusHandler: " + event);
+		}
+		
+		private function ioErrorHandlerLeaderboard(event:flash.events.IOErrorEvent):void {
+			trace("ioErrorHandler: " + event);
+		}
 	}
 }
