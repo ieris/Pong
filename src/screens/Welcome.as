@@ -1,13 +1,12 @@
 package screens
 {
-	import flash.text.TextField;
-	
 	import events.NavigationEvent;
 	
 	import starling.display.Button;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.text.TextField;
 	
 	public class Welcome extends Sprite
 	{		
@@ -23,7 +22,7 @@ package screens
 		public var name1Button:Button;
 		public var name2Button:Button;
 		public var name3Button:Button;
-		static public var userName:TextField = new TextField();
+		static public var userName:TextField = new TextField(0, 0, "");
 		public var nameSelected:int = 0;
 		private var logInCount:int = 0;
 

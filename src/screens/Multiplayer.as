@@ -11,8 +11,6 @@ package screens
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
-	import flash.text.TextField;
-	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
 	
@@ -23,6 +21,7 @@ package screens
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.events.KeyboardEvent;
+	import starling.text.TextField;
 	
 	public class Multiplayer extends Sprite
 	{	
@@ -52,15 +51,15 @@ package screens
 		private var ball_yVelocity:int = ballSpeedY;
 		
 		//Here are the score variables
-		public var playerTxt:TextField;
-		public var pcTxt:TextField;
+		static public var playerTxt:TextField = new TextField(200, 100, "");
+		static public var pcTxt:TextField = new TextField(200, 100, "");;
 		
 		//Here are the keyboard properties, to see when the ball should be released
 		private var space:Boolean = true;
 		
 		public var welcome:Welcome = new Welcome();
-		public var userName:TextField = new TextField();
-		private var country:TextField = new TextField();
+		public var userName:TextField;
+		private var country:TextField;
 		private var finalScore:int;
 		private var concededScore:int;
 		
@@ -81,7 +80,6 @@ package screens
 			configureLeaderboardListeners(loader);
 			
 			//Add all of the event listeners here		
-			//this.addEventListener(starling.events.Event.ENTER_FRAME, getBallPosition);
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
 			this.addEventListener(starling.events.Event.ENTER_FRAME, onEnterFrame);
 			this.addEventListener(starling.events.Event.ENTER_FRAME, collision);
@@ -94,7 +92,8 @@ package screens
 		{		
 			socket = new Socket();
 			socket.addEventListener(flash.events.Event.CONNECT, onConnected);
-			socket.addEventListener(flash.events.ProgressEvent.SOCKET_DATA, getBallPosition);
+			socket.addEventListener(flash.events.ProgressEvent.SOCKET_DATA, sendPlayerPosition);
+			//socket.addEventListener(flash.events.ProgressEvent.SOCKET_DATA, getBallPosition);
 			socket.connect(IP, 5555);
 			
 			trace(" getPlayerName: " + welcome.getPlayerName().text);
@@ -115,14 +114,25 @@ package screens
 			this.addChild(ball);
 			
 			//This is where we have our scores
-			//playerTxt.text = String(playerTxt);
-			//pcTxt.text = String(pcTxt);
+						
+			playerTxt.x = 200;
+			playerTxt.y = 0;
+			playerTxt.color = 0xffffff;
+			playerTxt.fontSize = 60;
+			playerTxt.text = String(playerScore);
+			addChild(playerTxt);
 			
-			var format:TextFormat = new TextFormat();
-			format.font = "Arial";
-			format.color = 0xFF0000;
-			format.size = 10;
+			trace("text: " + playerTxt.text);
 			
+			pcTxt.x = stage.stageWidth - 200 - pcTxt.width;
+			pcTxt.y = 0;
+			pcTxt.color = 0xffffff;
+			pcTxt.fontSize = 60;
+			pcTxt.text = String(pcScore);
+			addChild(pcTxt);
+			
+			trace("text2: " + pcTxt.text);
+					
 			mainMenuButton = new Button(Assets.getTexture("MainMenuButton"));
 			mainMenuButton.x = stage.stageWidth/2 - mainMenuButton.width/2;
 			mainMenuButton.y = 20;
@@ -180,6 +190,7 @@ package screens
 				{
 					ball_xVelocity *= -1;
 					playerScore += 1;
+					playerTxt.text = String(playerScore);
 					space = false;
 					trace("player : " + playerScore);
 					resetBall();
@@ -197,6 +208,7 @@ package screens
 				{
 					ball_xVelocity *= -1;
 					pcScore += 1;
+					pcTxt.text = String(pcScore);
 					trace("pc : " + pcScore);
 					space = false;
 					resetBall();
@@ -437,31 +449,48 @@ package screens
 		
 		protected function onConnected(event:flash.events.Event):void
 		{			
-			this.addEventListener(starling.events.Event.ENTER_FRAME, sendPlayerPosition);						
+			trace("Connection has been established");
+			sendPlayerPosition();
+			getBallPosition();
 		}
 		
 		private function sendPlayerPosition():void
 		{
+			var data: ByteArray = new ByteArray();
 			var playerData:String = player.y.toString();
-			trace(playerData);
+			//trace(playerData);
 			
 			//Attempting to send player position to server
-			socket.writeUTFBytes("Player data: ");
-			socket.writeUTFBytes(playerData);
-			socket.writeUTFBytes("\n");
+			//socket.writeUTFBytes("Player data: ");
+			//data.position = 0;
+			//socket.writeUTFBytes(playerData);
+			//data.position = 0;
+			//socket.writeUTFBytes("\n");
+			//data.position = 0;
+			
+			trace ("sendPlayer data: " + socket.bytesAvailable);
 			socket.flush();
 		}
 		
-		private function getBallPosition(event:flash.events.ProgressEvent):void
+		private function getBallPosition():void
 		{
 			trace("getBallPosition function called");
-			
+
 			var ballYPosition:int;
 			
-			socket.readUTFBytes(ballYPosition);
-			socket.flush();
-			
-			trace("y: " + ballYPosition);
+			//trace(socket.bytesAvailable);
+			//while (socket.bytesAvailable > 0)
+			//{
+				//socket.readUTFBytes(1);
+				trace(socket.readUTFBytes(ballYPosition));
+				socket.flush();
+			//}
+					
 		}
+		
+		/*private function update():void
+		{
+			getBallPosition(ProgressEvent);
+		}*/
 	}
 }
