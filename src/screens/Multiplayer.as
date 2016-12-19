@@ -13,7 +13,9 @@ package screens
 	import flash.net.URLRequestMethod;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
-	import flash.ui.Keyboard;	
+	import flash.ui.Keyboard;
+	import flash.utils.ByteArray;
+	
 	import events.NavigationEvent;
 	
 	import starling.display.Button;
@@ -78,11 +80,8 @@ package screens
 			loader = new URLLoader();
 			configureLeaderboardListeners(loader);
 			
-			socket = new Socket();
-			socket.addEventListener(flash.events.Event.CONNECT, onConnected);
-			socket.connect(IP, 5555);
-
 			//Add all of the event listeners here		
+			//this.addEventListener(starling.events.Event.ENTER_FRAME, getBallPosition);
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
 			this.addEventListener(starling.events.Event.ENTER_FRAME, onEnterFrame);
 			this.addEventListener(starling.events.Event.ENTER_FRAME, collision);
@@ -90,15 +89,14 @@ package screens
 			this.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 		}
 		
-		protected function onConnected(event:flash.events.Event):void
-		{
-			socket.writeUTFBytes("Hello server!");
-			socket.flush();
-		}
-		
 		//Draw assets function
 		private function drawGame():void
 		{		
+			socket = new Socket();
+			socket.addEventListener(flash.events.Event.CONNECT, onConnected);
+			socket.addEventListener(flash.events.ProgressEvent.SOCKET_DATA, getBallPosition);
+			socket.connect(IP, 5555);
+			
 			trace(" getPlayerName: " + welcome.getPlayerName().text);
 					
 			player = new Image(Assets.getTexture("PlayerOne"));
@@ -234,8 +232,7 @@ package screens
 		
 		//Function to call events every second
 		private function onEnterFrame(event:starling.events.Event):void
-		{
-			
+		{						
 			//Moving the player
 			player.y += player_velocity;	
 			
@@ -436,6 +433,35 @@ package screens
 		
 		private function ioErrorHandlerLeaderboard(event:flash.events.IOErrorEvent):void {
 			trace("ioErrorHandler: " + event);
+		}
+		
+		protected function onConnected(event:flash.events.Event):void
+		{			
+			this.addEventListener(starling.events.Event.ENTER_FRAME, sendPlayerPosition);						
+		}
+		
+		private function sendPlayerPosition():void
+		{
+			var playerData:String = player.y.toString();
+			trace(playerData);
+			
+			//Attempting to send player position to server
+			socket.writeUTFBytes("Player data: ");
+			socket.writeUTFBytes(playerData);
+			socket.writeUTFBytes("\n");
+			socket.flush();
+		}
+		
+		private function getBallPosition(event:flash.events.ProgressEvent):void
+		{
+			trace("getBallPosition function called");
+			
+			var ballYPosition:int;
+			
+			socket.readUTFBytes(ballYPosition);
+			socket.flush();
+			
+			trace("y: " + ballYPosition);
 		}
 	}
 }

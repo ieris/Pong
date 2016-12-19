@@ -38,12 +38,7 @@ package
 			screenGameover = new Gameover();
 			
 			this.addChild(screenWelcome);
-			screenWelcome.initialize();
-
-			//	Starling.multitouchEnabled = true;		
-			//	mStarling = new Starling(Game, stage);
-			//	mStarling.simulateMultitouch = true;
-			
+			screenWelcome.initialize();			
 		}
 		
 		private function onChangeScreen(event:NavigationEvent):void
