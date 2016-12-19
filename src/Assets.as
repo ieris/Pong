@@ -36,8 +36,8 @@ package
 		[Embed(source="../Assets/Welcome/OptionsButton.jpg")]
 		public static const OptionsButton:Class;
 		
-		[Embed(source="../Assets/Welcome/WelcomeBG.jpg")]
-		public static const WelcomeBG:Class;
+		[Embed(source="../Assets/Welcome/DeleteButton.png")]
+		public static const DeleteButton:Class;
 		
 		[Embed(source="../Assets/Welcome/GameLogo.png")]
 		public static const GameLogo:Class;

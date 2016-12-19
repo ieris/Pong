@@ -1,8 +1,18 @@
 package screens
 {
-	import flash.text.TextField;
-	import flash.text.TextFormat;
+	import flash.events.Event;
+	import flash.events.HTTPStatusEvent;
+	import flash.events.IEventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.events.ProgressEvent;
+	import flash.events.SecurityErrorEvent;
+	import flash.net.Socket;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestHeader;
+	import flash.net.URLRequestMethod;
 	import flash.ui.Keyboard;
+	import flash.utils.ByteArray;
 	
 	import events.NavigationEvent;
 	
@@ -11,9 +21,10 @@ package screens
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.events.KeyboardEvent;
+	import starling.text.TextField;
 	
 	public class Singleplayer extends Sprite
-	{			
+	{				
 		//Here we have all the game images
 		private var gameBG:Image;
 		private var player:Image;
@@ -26,41 +37,39 @@ package screens
 		public var playerScore:int = 0;
 		
 		//Here we have all of the PC properties
-		private var pcSpeed:int = 2;
+		private var pcSpeed:int = 4;
 		private var pc_velocity:int = 0;
 		public var pcScore:int = 0;
 		
 		//Here we have all of the ball properties
-		private var ballSpeedX:int = -6;
-		private var ballSpeedY:int = -4;
+		private var ballSpeedX:int = -7;
+		private var ballSpeedY:int = -5;
 		private var ball_xVelocity:int = -ballSpeedX;
 		private var ball_yVelocity:int = ballSpeedY;
 		
 		//Here are the score variables
-		public var playerTxt:TextField;
-		public var pcTxt:TextField;
+		static public var playerTxt:TextField = new TextField(200, 100, "");
+		static public var pcTxt:TextField = new TextField(200, 100, "");;
 		
 		//Here are the keyboard properties, to see when the ball should be released
 		private var space:Boolean = true;
 		
 		private var mainMenuButton:Button;
-		
+
 		//Here we initialize all of the event listeners
 		public function Singleplayer()
 		{
-			super();						
-			
 			//Add all of the event listeners here		
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
-			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			this.addEventListener(Event.ENTER_FRAME, collision);
+			this.addEventListener(starling.events.Event.ENTER_FRAME, onEnterFrame);
+			this.addEventListener(starling.events.Event.ENTER_FRAME, collision);
 			this.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			this.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 		}
 		
 		//Draw assets function
-		public function drawGame():void
-		{		
+		private function drawGame():void
+		{					
 			player = new Image(Assets.getTexture("PlayerOne"));
 			player.x = player.width;
 			player.y = 200;
@@ -77,41 +86,35 @@ package screens
 			this.addChild(ball);
 			
 			//This is where we have our scores
-			//playerTxt.text = String(playerTxt);
-			//pcTxt.text = String(pcTxt);
 			
-			var format:TextFormat = new TextFormat();
-			format.font = "Arial";
-			format.color = 0xFF0000;
-			format.size = 10;
+			playerTxt.x = 200;
+			playerTxt.y = 0;
+			playerTxt.color = 0xffffff;
+			playerTxt.fontSize = 60;
+			playerTxt.text = String(playerScore);
+			addChild(playerTxt);
+			
+			trace("text: " + playerTxt.text);
+			
+			pcTxt.x = stage.stageWidth - 200 - pcTxt.width;
+			pcTxt.y = 0;
+			pcTxt.color = 0xffffff;
+			pcTxt.fontSize = 60;
+			pcTxt.text = String(pcScore);
+			addChild(pcTxt);
+			
+			trace("text2: " + pcTxt.text);
 			
 			mainMenuButton = new Button(Assets.getTexture("MainMenuButton"));
 			mainMenuButton.x = stage.stageWidth/2 - mainMenuButton.width/2;
 			mainMenuButton.y = 20;
 			mainMenuButton.downState = Assets.getTexture("MainMenuButton");
 			this.addChild(mainMenuButton);
-			this.addEventListener(Event.TRIGGERED, onButtonClick);
+			this.addEventListener(starling.events.Event.TRIGGERED, onButtonClick);
 		}
-		
-		//Get data to send to the server and leaderboard
-		public function getPaddleYPosition():int
-		{
-			return player.y;
-		}
-		
-		public function getPlayerScore():int
-		{
-			return playerScore;
-		}
-		
-		public function getPCScore():int
-		{
-			return pcScore;
-		}
-		
-		
+
 		//Collision function for the paddle and ball (including singleplayer for now ---------!!!!)
-		private function collision(event:Event):void
+		private function collision(event:starling.events.Event):void
 		{			
 			//Restricting the pc from moving beyond the screen
 			if(pc.y <= 0)
@@ -143,6 +146,7 @@ package screens
 				{
 					ball_xVelocity *= -1;
 					playerScore += 1;
+					playerTxt.text = String(playerScore);
 					space = false;
 					trace("player : " + playerScore);
 					resetBall();
@@ -159,6 +163,7 @@ package screens
 				{
 					ball_xVelocity *= -1;
 					pcScore += 1;
+					pcTxt.text = String(pcScore);
 					trace("pc : " + pcScore);
 					space = false;
 					resetBall();
@@ -192,9 +197,8 @@ package screens
 		}
 		
 		//Function to call events every second
-		private function onEnterFrame(event:Event):void
-		{
-			
+		private function onEnterFrame(event:starling.events.Event):void
+		{						
 			//Moving the player
 			player.y += player_velocity;	
 			
@@ -262,9 +266,9 @@ package screens
 			player.visible = false;
 			pc.visible = false;
 			
-			this.removeEventListener(Event.ENTER_FRAME, gameOver);
+			this.removeEventListener(starling.events.Event.ENTER_FRAME, gameOver);
 			this.removeEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
-			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			this.removeEventListener(starling.events.Event.ENTER_FRAME, onEnterFrame);
 			this.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			this.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "game over"}, true));
@@ -292,14 +296,14 @@ package screens
 			this.visible = true;
 		}
 		
-		public function onButtonClick(event:Event):void
+		public function onButtonClick(event:starling.events.Event):void
 		{
 			var buttonClicked:Button = event.target as Button;
 			if ((buttonClicked as Button == mainMenuButton))
 			{
 				trace("pressed main menu button");
 				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "welcome"}, true));
-				this.removeEventListener(Event.TRIGGERED, onButtonClick);		
+				this.removeEventListener(starling.events.Event.TRIGGERED, onButtonClick);		
 			}
 		}
 	}

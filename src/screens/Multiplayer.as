@@ -193,6 +193,7 @@ package screens
 					playerTxt.text = String(playerScore);
 					space = false;
 					trace("player : " + playerScore);
+					sendPlayerScore()
 					resetBall();
 				}
 				else
@@ -210,6 +211,7 @@ package screens
 					pcScore += 1;
 					pcTxt.text = String(pcScore);
 					trace("pc : " + pcScore);
+					sendPCScore();
 					space = false;
 					resetBall();
 				}
@@ -374,30 +376,6 @@ package screens
 			}
 		}
 		
-		private function sendDataToServer():void
-		{
-			
-		}
-		
-		//Delete data from the leaderboard
-		private function deleteData():void
-		{
-			var header:URLRequestHeader = new URLRequestHeader("token", "$/>?&ReqEQjs7ih");
-			var url:String = "http://andrew.coventry.domains/removeData?query=id=20";
-			var urlRequest:URLRequest = new URLRequest(url);	
-			urlRequest.method = URLRequestMethod.POST;
-			urlRequest.requestHeaders.push(header);
-			
-			try
-			{
-				loader.load(urlRequest);
-			}
-			catch(error:Error)
-			{
-				trace("Unable to load the data from the leaderboard");
-			}
-		}
-		
 		public function onButtonClick(event:starling.events.Event):void
 		{
 			var buttonClicked:Button = event.target as Button;
@@ -450,47 +428,74 @@ package screens
 		protected function onConnected(event:flash.events.Event):void
 		{			
 			trace("Connection has been established");
-			sendPlayerPosition();
-			getBallPosition();
+			this.addEventListener(starling.events.Event.ENTER_FRAME, sendAllDataToServer);
 		}
 		
 		private function sendPlayerPosition():void
 		{
-			var data: ByteArray = new ByteArray();
-			var playerData:String = player.y.toString();
-			//trace(playerData);
+			var playerXData:String = player.x.toString();
+			var playerYData:String = player.y.toString();
 			
 			//Attempting to send player position to server
-			//socket.writeUTFBytes("Player data: ");
-			//data.position = 0;
-			//socket.writeUTFBytes(playerData);
-			//data.position = 0;
-			//socket.writeUTFBytes("\n");
-			//data.position = 0;
+			socket.writeUTFBytes("Player x: ");
+			socket.writeUTFBytes(playerXData);
+			socket.writeUTFBytes("\n");
+			socket.flush();
 			
-			trace ("sendPlayer data: " + socket.bytesAvailable);
+			socket.writeUTFBytes("Player y: ");
+			socket.writeUTFBytes(playerXData);
+			socket.writeUTFBytes("\n");
 			socket.flush();
 		}
 		
-		private function getBallPosition():void
+		private function sendBallPosition():void
 		{
 			trace("getBallPosition function called");
 
-			var ballYPosition:int;
+			var ballXPosition:String = ball.x.toString();
+			var ballYPosition:String = ball.y.toString();
 			
-			//trace(socket.bytesAvailable);
-			//while (socket.bytesAvailable > 0)
-			//{
-				//socket.readUTFBytes(1);
-				trace(socket.readUTFBytes(ballYPosition));
-				socket.flush();
-			//}
+			//Attempting to send player position to server
+			socket.writeUTFBytes("Ball x: ");
+			socket.writeUTFBytes(ballXPosition);
+			socket.writeUTFBytes("\n");
+			socket.flush();
+			
+			socket.writeUTFBytes("Ball y: ");
+			socket.writeUTFBytes(ballYPosition);
+			socket.writeUTFBytes("\n");
+			socket.flush();
 					
 		}
 		
-		/*private function update():void
+		private function sendPlayerScore():void
 		{
-			getBallPosition(ProgressEvent);
-		}*/
+			trace("getBallPosition function called");
+			
+			var playerScoreData:String = playerScore.toString();
+			
+			socket.writeUTFBytes("Player scored! Player score: ");
+			socket.writeUTFBytes(playerScoreData);
+			socket.writeUTFBytes("\n");
+			socket.flush();			
+		}
+		
+		private function sendPCScore():void
+		{
+			trace("getBallPosition function called");
+			
+			var pcScoreData:String = pcScore.toString();
+			
+			socket.writeUTFBytes("Player 2 scored! Player 2 score: ");
+			socket.writeUTFBytes(pcScoreData);
+			socket.writeUTFBytes("\n");
+			socket.flush();			
+		}
+		
+		private function sendAllDataToServer(event:starling.events.Event):void
+		{
+			sendPlayerPosition();
+			sendBallPosition();
+		}
 	}
 }

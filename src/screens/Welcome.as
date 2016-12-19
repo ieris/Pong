@@ -11,7 +11,7 @@ package screens
 	public class Welcome extends Sprite
 	{		
 		
-		private var welcomeBG:Image;
+		private var gameLogo:Image;
 		private var ballSelector:Image;
 		private var multiplayerButton:Button;
 		private var singleplayerButton:Button;
@@ -22,7 +22,8 @@ package screens
 		public var name1Button:Button;
 		public var name2Button:Button;
 		public var name3Button:Button;
-		static public var userName:TextField = new TextField(0, 0, "");
+		public var userName:TextField = new TextField(0, 0, "");
+		private var notification:TextField = new TextField(1000, 200, "HELLO");
 		public var nameSelected:int = 0;
 		private var logInCount:int = 0;
 
@@ -45,6 +46,14 @@ package screens
 		
 		private function drawScreen():void
 		{		
+			//Game logo
+			
+			gameLogo = new Image(Assets.getTexture("GameLogo"));
+			gameLogo.x = stage.stageWidth/2 - gameLogo.width/2;
+			gameLogo.y = 400;
+			this.addChild(gameLogo);
+			
+			//Main menu buttons
 			multiplayerButton = new Button(Assets.getTexture("MultiplayerButton"));
 			multiplayerButton.x = stage.stageWidth/2 - multiplayerButton.width/2;
 			multiplayerButton.y = stage.stageHeight/2 - multiplayerButton.height - 20;
@@ -62,6 +71,12 @@ package screens
 			leaderboardButton.y = stage.stageHeight/2 + multiplayerButton.height;
 			leaderboardButton.downState = Assets.getTexture("LeaderboardButton");
 			this.addChild(leaderboardButton);
+			
+			optionsButton = new Button(Assets.getTexture("OptionsButton"));
+			optionsButton.x = stage.stageWidth/2 - multiplayerButton.width/2;
+			optionsButton.y = stage.stageHeight/2 + (multiplayerButton.height*2) + 10;
+			optionsButton.downState = Assets.getTexture("OptionsButton");
+			this.addChild(optionsButton);
 			
 			//Name options
 			
@@ -94,6 +109,11 @@ package screens
 			logInButton.downState = Assets.getTexture("LogInButton");
 			logInButton.visible = true;
 			
+			notification.x = stage.stageWidth/2 - notification.width/2;
+			notification.y = 150;
+			notification.color = 0xffffff;
+			notification.fontSize = 30;
+			notification.text = "Choose a name and log in!";
 			this.addEventListener(Event.TRIGGERED, onButtonClick);			
 		}
 		
@@ -109,13 +129,17 @@ package screens
 				multiplayerButton.visible = false;
 				singleplayerButton.visible = false;
 				leaderboardButton.visible = false;
+				gameLogo.visible = false;
+				optionsButton.visible = false;
 				
+				this.addChild(notification);
 				this.addChild(name1Button);
 				this.addChild(name2Button);
 				this.addChild(name3Button);
 			}
 			else if ((buttonClicked as Button == singleplayerButton))
 			{
+				trace("singleplayer clicked!");
 				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "singleplayer"}, true));
 				this.removeEventListener(Event.ENTER_FRAME, onButtonClick);
 			}
@@ -125,10 +149,16 @@ package screens
 				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "leaderboard"}, true));
 				this.removeEventListener(Event.ENTER_FRAME, onButtonClick);
 			}
+			else if ((buttonClicked as Button == optionsButton))
+			{
+				trace("clicked leaderboard");
+				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "options"}, true));
+				this.removeEventListener(Event.ENTER_FRAME, onButtonClick);
+			}
+			
 			else if ((buttonClicked as Button == logInButton))
 			{
-				logInCount = 1;
-				
+				logInCount = 1;								
 				if (nameSelected > 0 && logInCount > 0)
 				{
 					logIn(userName);
@@ -163,6 +193,7 @@ package screens
 			name2Button.visible = false;
 			name3Button.visible = false;
 			logInButton.visible = false;
+			
 			
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "multiplayer"}, true));
 		}
