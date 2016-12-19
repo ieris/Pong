@@ -22,9 +22,12 @@ package screens
 	{
 		//Leaderboard variables
 		private var loader:URLLoader;
+		
+		//This is where the user name is stored that the user has logged in as
 		public var welcome:Welcome = new Welcome();
 		public var userName:TextField = new TextField(0,0,"");
 		
+		//All the buttons and text
 		private var mainMenuButton:Button;
 		private var deleteButton:Button;
 		private var notification:TextField = new TextField(2000, 200, "");
@@ -63,6 +66,8 @@ package screens
 			this.addEventListener(starling.events.Event.TRIGGERED, onButtonClick);
 		}
 		
+		//If main menu button is clicked it goes to the main screen
+		//IF delete button is clicked the delete function is called
 		public function onButtonClick(event:starling.events.Event):void
 		{
 			var buttonClicked:Button = event.target as Button;
@@ -80,10 +85,11 @@ package screens
 		}
 		
 		//Delete data from the leaderboard
+		//We take the user id (which is currently not implemented in the leaderboard)
+		//and then send a post request to delete the data with the specific id
 		private function deleteData():void
 		{			
-			//userName = welcome.getPlayerName();
-			//userName.text = "%22" + userName + "%22";
+			//
 			var id:int = 13;
 			var userData:String = "%22" + id + "%22";
 			var header:URLRequestHeader = new URLRequestHeader("token", "$/>?&ReqEQjs7ih");
@@ -104,6 +110,7 @@ package screens
 			notification.text = "Your game data has been deleted";
 		}
 		
+		//Leaderboard listeners
 		private function configureLeaderboardListeners(dispatcher:flash.events.IEventDispatcher):void
 		{
 			//trace("completeHandler: " + loader.data);
@@ -117,9 +124,6 @@ package screens
 		private function complete(event:flash.events.Event):void {
 			//var loader:URLLoader = URLLoader(event.target);
 			trace("completeHandler: " + loader.data);
-			
-			//var info:Object = JSON.parse(loader.data);
-			//trace("username is: " + info["leaderboardData"][0]["Username"]);
 		}
 		
 		private function openHandler(event:flash.events.Event):void {

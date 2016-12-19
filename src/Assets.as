@@ -1,10 +1,8 @@
 package
 {
 	import flash.display.Bitmap;
-	import flash.utils.Dictionary;
-	
+	import flash.utils.Dictionary;	
 	import starling.textures.Texture;
-	import starling.textures.TextureAtlas;
 	
 	public class Assets
 	{

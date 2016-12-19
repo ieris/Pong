@@ -1,21 +1,7 @@
 package screens
 {
-	import flash.events.Event;
-	import flash.events.HTTPStatusEvent;
-	import flash.events.IEventDispatcher;
-	import flash.events.IOErrorEvent;
-	import flash.events.ProgressEvent;
-	import flash.events.SecurityErrorEvent;
-	import flash.net.Socket;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	import flash.net.URLRequestHeader;
-	import flash.net.URLRequestMethod;
 	import flash.ui.Keyboard;
-	import flash.utils.ByteArray;
-	
-	import events.NavigationEvent;
-	
+	import events.NavigationEvent;	
 	import starling.display.Button;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -23,6 +9,7 @@ package screens
 	import starling.events.KeyboardEvent;
 	import starling.text.TextField;
 	
+	//Same as the multiplayer mode except there is no server or leaderboard connection
 	public class Singleplayer extends Sprite
 	{				
 		//Here we have all the game images
@@ -94,16 +81,12 @@ package screens
 			playerTxt.text = String(playerScore);
 			addChild(playerTxt);
 			
-			trace("text: " + playerTxt.text);
-			
 			pcTxt.x = stage.stageWidth - 200 - pcTxt.width;
 			pcTxt.y = 0;
 			pcTxt.color = 0xffffff;
 			pcTxt.fontSize = 60;
 			pcTxt.text = String(pcScore);
 			addChild(pcTxt);
-			
-			trace("text2: " + pcTxt.text);
 			
 			mainMenuButton = new Button(Assets.getTexture("MainMenuButton"));
 			mainMenuButton.x = stage.stageWidth/2 - mainMenuButton.width/2;

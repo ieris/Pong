@@ -11,9 +11,7 @@ package screens
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
-	import flash.ui.Keyboard;
-	import flash.utils.ByteArray;
-	
+	import flash.ui.Keyboard;	
 	import events.NavigationEvent;
 	
 	import starling.display.Button;
@@ -57,12 +55,14 @@ package screens
 		//Here are the keyboard properties, to see when the ball should be released
 		private var space:Boolean = true;
 		
+		//Here are the variables which will hold the data that is sent over to the leaderboard
 		public var welcome:Welcome = new Welcome();
 		public var userName:TextField = new TextField(200, 100, "");
 		private var country:TextField = new TextField(200, 100, "");
 		private var finalScore:int;
 		private var concededScore:int;
 		
+		//Button back to the main menu
 		private var mainMenuButton:Button;
 		
 		//Server variables
@@ -75,7 +75,8 @@ package screens
 		//Here we initialize all of the event listeners
 		public function Multiplayer()
 		{
-			//Create a loader for the leaderboard
+			//Create a loader for the leaderboard and call the functions to
+			//deal with loader events
 			loader = new URLLoader();
 			configureLeaderboardListeners(loader);
 			
@@ -90,15 +91,17 @@ package screens
 		//Draw assets function
 		private function drawGame():void
 		{		
-			//sendFakeData();
+			//Here we create the socket connection to port 5555 and localhost
+			//We add events to track when the socket is connected and when data is received
 			socket = new Socket();
 			socket.addEventListener(flash.events.Event.CONNECT, onConnected);
 			socket.addEventListener(flash.events.ProgressEvent.SOCKET_DATA, sendPlayerPosition);
-			//socket.addEventListener(flash.events.ProgressEvent.SOCKET_DATA, getBallPosition);
 			socket.connect(IP, 5555);
 			
-			trace(" getPlayerName: " + welcome.getPlayerName().text);
+			//We collect the player name the user logged in as here
+			trace("Your player name: " + welcome.getPlayerName().text);
 					
+			//Draw all the assets
 			player = new Image(Assets.getTexture("PlayerOne"));
 			player.x = player.width;
 			player.y = 200;
@@ -114,17 +117,14 @@ package screens
 			ball.y = stage.stageHeight/2;
 			this.addChild(ball);
 			
-			//This is where we have our scores
-						
+			//This is where we have our score text					
 			playerTxt.x = 200;
 			playerTxt.y = 0;
 			playerTxt.color = 0xffffff;
 			playerTxt.fontSize = 60;
 			playerTxt.text = String(playerScore);
 			addChild(playerTxt);
-			
-			trace("text: " + playerTxt.text);
-			
+
 			pcTxt.x = stage.stageWidth - 200 - pcTxt.width;
 			pcTxt.y = 0;
 			pcTxt.color = 0xffffff;
@@ -132,8 +132,7 @@ package screens
 			pcTxt.text = String(pcScore);
 			addChild(pcTxt);
 			
-			trace("text2: " + pcTxt.text);
-					
+			//We call an event listener to track button clicks
 			mainMenuButton = new Button(Assets.getTexture("MainMenuButton"));
 			mainMenuButton.x = stage.stageWidth/2 - mainMenuButton.width/2;
 			mainMenuButton.y = 20;
@@ -158,7 +157,7 @@ package screens
 			return pcScore;
 		}			
 		
-		//Collision function for the paddle and ball (including singleplayer for now ---------!!!!)
+		//Collision function for the paddle and ball
 		private function collision(event:starling.events.Event):void
 		{			
 			//Restricting the pc from moving beyond the screen
@@ -185,8 +184,12 @@ package screens
 			
 			//Ball collision with the edge of the screen
 			// >
+			//If player scores
 			if (ball.x + ball.width >= stage.stageWidth)
 			{
+				//When score is less than 2, the score is added, score text
+				//is updated and the score is sent to the server
+				//Othe game over event is sent and data is sent to the leaderboard
 				if(playerScore <= 2)
 				{
 					ball_xVelocity *= -1;
@@ -204,6 +207,7 @@ package screens
 				}
 			}
 				// <
+			//If player 2 scores
 			else if (ball.x <= 0)
 			{
 				if(pcScore <= 2)
@@ -222,12 +226,12 @@ package screens
 					sendDataToLeaderboard();
 				}
 			}
-			// ^
+			// ^ Collision with top wall
 			else if (ball.y <= 0)
 			{
 				ball_yVelocity *= -1;
 			}
-			// v
+			// v Collision with bottom wall
 			else if (ball.y + ball.height + ball.height >= stage.stageHeight)
 			{
 				ball_yVelocity *= -1;
@@ -295,7 +299,7 @@ package screens
 			}
 		}
 		
-		//Reset the ball when score is collided with vertical wall
+		//Reset the ball and paddles when ball is collided with vertical wall
 		private function resetBall():void
 		{
 			ball.x = stage.stageWidth/2;
@@ -308,11 +312,13 @@ package screens
 		
 		private function gameOver():void
 		{		
+			//reset ball position and hide all of the elements
 			resetBall();
 			ball.visible = false;
 			player.visible = false;
 			pc.visible = false;
 			
+			//remove event listeners and Oberserver launches the game over condition
 			this.removeEventListener(starling.events.Event.ENTER_FRAME, gameOver);
 			this.removeEventListener(starling.events.Event.ADDED_TO_STAGE, drawGame);
 			this.removeEventListener(starling.events.Event.ENTER_FRAME, onEnterFrame);
@@ -376,6 +382,7 @@ package screens
 			}
 		}
 		
+		//When main menu button is clicked the welcome screen is launched
 		public function onButtonClick(event:starling.events.Event):void
 		{
 			var buttonClicked:Button = event.target as Button;
@@ -386,7 +393,9 @@ package screens
 				this.removeEventListener(starling.events.Event.TRIGGERED, onButtonClick);		
 			}
 		}
-
+		
+		//This is where the leadeboard sends data if it is connected
+		//It also performs error checks incase a certain error is encountered
 		private function configureLeaderboardListeners(dispatcher:flash.events.IEventDispatcher):void
 		{
 			//trace("completeHandler: " + loader.data);
@@ -400,9 +409,6 @@ package screens
 		private function complete(event:flash.events.Event):void {
 			var loader:URLLoader = URLLoader(event.target);
 			trace("completeHandler: " + loader.data);
-			
-			//var info:Object = JSON.parse(loader.data);
-			//trace("username is: " + info["leaderboardData"][0]["Username"]);
 		}
 		
 		private function openHandler(event:flash.events.Event):void {
@@ -431,25 +437,25 @@ package screens
 			this.addEventListener(starling.events.Event.ENTER_FRAME, sendAllDataToServer);
 		}
 		
+		//Sending player position to the server
+		//We convert data to string first and then we send it over and flush the socket
 		private function sendPlayerPosition():void
 		{
 			var playerYData:String = player.y.toString();
-			
-			//Attempting to send player position to server
-			
-			/*socket.writeUTFBytes("Player y: ");
+			socket.writeUTFBytes("Player y: ");
 			socket.writeUTFBytes(playerYData);
 			socket.writeUTFBytes("\n");
-			socket.flush();*/
+			socket.flush();
 		}
 		
+		//Send ball position to the server in the same manner
 		private function sendBallPosition():void
 		{
 			var ballXPosition:String = ball.x.toString();
 			var ballYPosition:String = ball.y.toString();
 			
 			//Attempting to send player position to server
-			/*socket.writeUTFBytes("Ball x: ");
+			socket.writeUTFBytes("Ball x: ");
 			socket.writeUTFBytes(ballXPosition);
 			socket.writeUTFBytes("\n");
 			socket.flush();
@@ -457,10 +463,11 @@ package screens
 			socket.writeUTFBytes("Ball y: ");
 			socket.writeUTFBytes(ballYPosition);
 			socket.writeUTFBytes("\n");
-			socket.flush();*/
+			socket.flush();
 					
 		}
 		
+		//Send the player score and let teh server know who scored
 		private function sendPlayerScore():void
 		{			
 			var playerScoreData:String = playerScore.toString();
@@ -483,6 +490,7 @@ package screens
 			socket.flush();			
 		}
 		
+		//This is where the data is sent at every frame to the server
 		private function sendAllDataToServer(event:starling.events.Event):void
 		{
 			sendPlayerPosition();

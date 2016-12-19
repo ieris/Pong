@@ -1,15 +1,13 @@
 package
 {
-	//Screens, onChange screen cases 'play'
+	//We beging by creating the screens we will use for the game
 	import events.NavigationEvent;
-	
 	import screens.Gameover;
 	import screens.Leaderboard;
 	import screens.Multiplayer;
 	import screens.Options;
 	import screens.Singleplayer;
-	import screens.Welcome;
-	
+	import screens.Welcome;	
 	import starling.display.Sprite;
 	import starling.events.Event;
 	
@@ -34,6 +32,7 @@ package
 			
 			this.addEventListener(events.NavigationEvent.CHANGE_SCREEN, onChangeScreen);
 			
+			//Creating an instance of each screen
 			screenMultiplayer = new Multiplayer();
 			screenSingleplayer = new Singleplayer();
 			screenOptions = new Options();
@@ -41,12 +40,15 @@ package
 			screenWelcome = new Welcome();
 			screenGameover = new Gameover();
 			
+			//First screen added is the welcome screen
 			this.addChild(screenWelcome);
 			screenWelcome.initialize();			
 		}
 		
 		private function onChangeScreen(event:NavigationEvent):void
 		{
+			//These are the various cases where the Observer will decide
+			//which screen to display and which to remove
 			switch(event.params.id)
 			{		
 				case "multiplayer":

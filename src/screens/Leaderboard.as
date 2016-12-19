@@ -4,14 +4,12 @@ package screens
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
-	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
-	import flash.net.URLRequestMethod;
-	
+	import flash.net.URLRequestMethod;	
 	import events.NavigationEvent;
 	
 	import starling.display.Button;
@@ -53,17 +51,12 @@ package screens
 			}
 			
 			visualize();
-			//this.addEventListener(flash.events.Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
-		private function onAddedToStage(event:flash.events.Event):void
-		{		
-			visualize();
-			this.removeEventListener(flash.events.Event.ADDED_TO_STAGE, onAddedToStage);
-		}
-		
+		//Draw the game data
 		private function visualize():void
 		{
+			//This is where all the titles are stored
 			rank = new TextField(200, 200, "Rank");
 			rank.x = 640;
 			rank.y = 160;
@@ -92,15 +85,11 @@ package screens
 			score.color = 0xffffff;
 			this.addChild(score);
 			
-			//var format:TextFormat = new TextFormat();
-			//format.font = "Arial";
-			//format.color = 0xFF0000;
-			//format.size = 40;
 		}		
 		
+		//Leaderboard listeners
 		private function configureListeners(dispatcher:flash.events.IEventDispatcher):void
 		{
-			//trace("completeHandler: " + loader.data);
 			dispatcher.addEventListener(flash.events.Event.COMPLETE, complete);
 			dispatcher.addEventListener(flash.events.Event.OPEN, openHandler);
 			dispatcher.addEventListener(ProgressEvent.PROGRESS, progressHandler);
@@ -113,6 +102,7 @@ package screens
 			trace("completeHandler: " + loader.data);
 			
 			//Rank
+			//Here we have all of our text boxes for ranks
 			var rank1:TextField = new TextField(100, 100, "1");
 			var rank2:TextField = new TextField(100, 100, "2");
 			var rank3:TextField = new TextField(100, 100, "3");
@@ -185,7 +175,8 @@ package screens
 			this.addChild(rank10);
 			
 			//Username
-			
+			//Here we access the leaderboard data via JSON array and store it in variables
+			//Same process repeated throughout
 			var info:Object = JSON.parse(loader.data);
 			var name1:TextField = new TextField(100, 100, (info["leaderboardData"][0]["Username"]));
 			var name2:TextField = new TextField(100, 100, (info["leaderboardData"][1]["Username"]));
@@ -423,6 +414,7 @@ package screens
 			}
 		}
 		
+		//Leaderboard listeners
 		private function openHandler(event:flash.events.Event):void {
 			trace("openHandler: " + event);
 		}
@@ -441,11 +433,6 @@ package screens
 		
 		private function ioErrorHandler(event:flash.events.IOErrorEvent):void {
 			trace("ioErrorHandler: " + event);
-		}
-		
-		private function onEnterFrame(event:flash.events.Event):void
-		{
-
 		}
 	}
 }

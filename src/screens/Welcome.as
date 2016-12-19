@@ -10,25 +10,24 @@ package screens
 	
 	public class Welcome extends Sprite
 	{		
-		
+		//Menu buttons
 		private var gameLogo:Image;
-		private var ballSelector:Image;
 		private var multiplayerButton:Button;
 		private var singleplayerButton:Button;
 		private var logInButton:Button;
 		private var optionsButton:Button;
 		private var leaderboardButton:Button;
 				
+		//Log in menu buttons
 		public var name1Button:Button;
 		public var name2Button:Button;
 		public var name3Button:Button;
+		
+		//Log in variables
 		static public var userName:TextField = new TextField(0, 0, "");
-		private var notification:TextField = new TextField(1000, 200, "HELLO");
+		private var notification:TextField = new TextField(1000, 200, "");
 		public var nameSelected:int = 0;
-		private var logInCount:int = 0;
-
-		//log in variables
-				
+		private var logInCount:int = 0;				
 		
 		public function Welcome()
 		{
@@ -38,16 +37,16 @@ package screens
 	
 		private function onAddedToStage(event:Event):void
 		{
-			//draw the welcome screen
+			//Draw the welcome screen
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			drawScreen();
 			trace("Welcome screen initialized");
 		}
 		
+		//Here we add all of the elements of the game (e.g. Buttons)
 		private function drawScreen():void
 		{		
-			//Game logo
-			
+			//Game logo			
 			gameLogo = new Image(Assets.getTexture("GameLogo"));
 			gameLogo.x = stage.stageWidth/2 - gameLogo.width/2;
 			gameLogo.y = 400;
@@ -79,7 +78,9 @@ package screens
 			this.addChild(optionsButton);
 			
 			//Name options
-			
+			//We set the name for a button so this can be stored in a seperate variable
+			//This then gets used as the user name for the player
+			//When the player data is sent, this username will be sent
 			name1Button = new Button(Assets.getTexture("Name1"));
 			name1Button.x = stage.stageWidth/2 - multiplayerButton.width/2;
 			name1Button.y = stage.stageHeight/2 - multiplayerButton.height - 200;
@@ -102,13 +103,13 @@ package screens
 			name3Button.visible = true;
 			
 			//Log in buttons
-			
 			logInButton = new Button(Assets.getTexture("LogInButton"));
 			logInButton.x = stage.stageWidth/2 - multiplayerButton.width/2;
 			logInButton.y = stage.stageHeight/2 + multiplayerButton.height+20;
 			logInButton.downState = Assets.getTexture("LogInButton");
 			logInButton.visible = true;
 			
+			//Lets the player know what to do
 			notification.x = stage.stageWidth/2 - notification.width/2;
 			notification.y = 150;
 			notification.color = 0xffffff;
@@ -117,15 +118,17 @@ package screens
 			this.addEventListener(Event.TRIGGERED, onButtonClick);			
 		}
 		
+		//When a button is clicked we check which button was click and do something with it
 		private function onButtonClick(event:Event):void
 		{
 			var buttonClicked:Button = event.target as Button;
 			if ((buttonClicked as Button == multiplayerButton))
-			{
-				trace("clicked");
-				this.addChild(logInButton);
-	
-				
+			{	
+				//When the multiplayer mode is launched we let the user log in
+				//To do that the log in button is added as well as the name buttons
+				//We add the notification text to let the player know what to do
+
+				this.addChild(logInButton);			
 				multiplayerButton.visible = false;
 				singleplayerButton.visible = false;
 				leaderboardButton.visible = false;
@@ -137,6 +140,7 @@ package screens
 				this.addChild(name2Button);
 				this.addChild(name3Button);
 			}
+			//If single player button is clicked the Observer selects the singleplayer screen to take over
 			else if ((buttonClicked as Button == singleplayerButton))
 			{
 				trace("singleplayer clicked!");
@@ -155,7 +159,9 @@ package screens
 				this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "options"}, true));
 				this.removeEventListener(Event.ENTER_FRAME, onButtonClick);
 			}
-			
+			//When the log in button is clicked we check whether
+			//a name has already been picked. If yes, then the log in function 
+			//is called with the name as a variable
 			else if ((buttonClicked as Button == logInButton))
 			{
 				logInCount = 1;								
@@ -165,7 +171,9 @@ package screens
 				}
 				this.removeEventListener(Event.ENTER_FRAME, onButtonClick);
 			}
-
+			
+			//We check which of the names are picked and assign the userName to the 
+			//name of the button
 			else if ((buttonClicked as Button == name1Button))
 			{
 				nameSelected = 1;
@@ -186,6 +194,8 @@ package screens
 			}
 		}
 		
+		//The buttons are hidden from the screen and the multiplayer game is launched
+		//with the player logged in
 		private function logIn(userName:TextField):void
 		{
 			trace("you have logged in as :" + userName.text);
@@ -198,15 +208,19 @@ package screens
 			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "multiplayer"}, true));
 		}
 		
+		//returns the username
 		public function getPlayerName():TextField
 		{
 			return userName;
 		}
+		
+		//user to draw teh screen
 		public function initialize():void
 		{
 			this.visible = true;
 		}
 		
+		//used to hide the screen
 		public function disposeTemporarily():void
 		{
 			this.visible = false;
