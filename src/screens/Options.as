@@ -23,11 +23,11 @@ package screens
 		//Leaderboard variables
 		private var loader:URLLoader;
 		public var welcome:Welcome = new Welcome();
-		public var userName:TextField;
+		public var userName:TextField = new TextField(0,0,"");
 		
 		private var mainMenuButton:Button;
 		private var deleteButton:Button;
-		private var notification:TextField = new TextField(200, 200, "");
+		private var notification:TextField = new TextField(2000, 200, "");
 		
 		public function Options()
 		{
@@ -43,18 +43,17 @@ package screens
 		//Draw assets function
 		private function drawGame():void
 		{					
-			notification.x = stage.stageWidth - 200 - notification.width;
-			notification.y = 300;
+			notification.x = stage.stageWidth/2 - notification.width/2;
+			notification.y = 220;
 			notification.color = 0xffffff;
 			notification.fontSize = 30;
 			addChild(notification);
 			
 			deleteButton = new Button(Assets.getTexture("DeleteButton"));
 			deleteButton.x = stage.stageWidth/2 - deleteButton.width/2;
-			deleteButton.y = 20;
+			deleteButton.y = 400;
 			deleteButton.downState = Assets.getTexture("DeleteButton");
 			this.addChild(deleteButton);
-			this.addEventListener(starling.events.Event.TRIGGERED, onButtonClick);
 			
 			mainMenuButton = new Button(Assets.getTexture("MainMenuButton"));
 			mainMenuButton.x = stage.stageWidth/2 - mainMenuButton.width/2;
@@ -76,17 +75,19 @@ package screens
 			else if ((buttonClicked as Button == deleteButton))
 			{
 				trace("pressed main menu button");
-				deleteData();
-				this.removeEventListener(starling.events.Event.TRIGGERED, onButtonClick);		
+				deleteData();	
 			}
 		}
 		
 		//Delete data from the leaderboard
 		private function deleteData():void
 		{			
-			userName = welcome.getPlayerName();
+			//userName = welcome.getPlayerName();
+			//userName.text = "%22" + userName + "%22";
+			var id:int = 13;
+			var userData:String = "%22" + id + "%22";
 			var header:URLRequestHeader = new URLRequestHeader("token", "$/>?&ReqEQjs7ih");
-			var url:String = "http://andrew.coventry.domains/removeData?query=username=" + userName;
+			var url:String = "http://andrew.coventry.domains/removeData?query=id=" + id;
 			var urlRequest:URLRequest = new URLRequest(url);	
 			urlRequest.method = URLRequestMethod.POST;
 			urlRequest.requestHeaders.push(header);
@@ -114,11 +115,11 @@ package screens
 			dispatcher.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandlerLeaderboard);
 		}
 		private function complete(event:flash.events.Event):void {
-			var loader:URLLoader = URLLoader(event.target);
+			//var loader:URLLoader = URLLoader(event.target);
 			trace("completeHandler: " + loader.data);
 			
-			var info:Object = JSON.parse(loader.data);
-			trace("username is: " + info["leaderboardData"][0]["Username"]);
+			//var info:Object = JSON.parse(loader.data);
+			//trace("username is: " + info["leaderboardData"][0]["Username"]);
 		}
 		
 		private function openHandler(event:flash.events.Event):void {

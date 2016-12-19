@@ -58,8 +58,8 @@ package screens
 		private var space:Boolean = true;
 		
 		public var welcome:Welcome = new Welcome();
-		public var userName:TextField;
-		private var country:TextField;
+		public var userName:TextField = new TextField(200, 100, "");
+		private var country:TextField = new TextField(200, 100, "");
 		private var finalScore:int;
 		private var concededScore:int;
 		
@@ -90,6 +90,7 @@ package screens
 		//Draw assets function
 		private function drawGame():void
 		{		
+			//sendFakeData();
 			socket = new Socket();
 			socket.addEventListener(flash.events.Event.CONNECT, onConnected);
 			socket.addEventListener(flash.events.ProgressEvent.SOCKET_DATA, sendPlayerPosition);
@@ -186,7 +187,7 @@ package screens
 			// >
 			if (ball.x + ball.width >= stage.stageWidth)
 			{
-				if(playerScore < 2)
+				if(playerScore <= 2)
 				{
 					ball_xVelocity *= -1;
 					playerScore += 1;
@@ -205,7 +206,7 @@ package screens
 				// <
 			else if (ball.x <= 0)
 			{
-				if(pcScore < 2)
+				if(pcScore <= 2)
 				{
 					ball_xVelocity *= -1;
 					pcScore += 1;
@@ -306,10 +307,8 @@ package screens
 		}
 		
 		private function gameOver():void
-		{
+		{		
 			resetBall();
-			pcScore = 0;
-			playerScore = 0;
 			ball.visible = false;
 			player.visible = false;
 			pc.visible = false;
@@ -319,7 +318,7 @@ package screens
 			this.removeEventListener(starling.events.Event.ENTER_FRAME, onEnterFrame);
 			this.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			this.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
-			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "game over"}, true));
+			this.dispatchEvent(new NavigationEvent(NavigationEvent.CHANGE_SCREEN, {id: "game over"}, true));		
 		}
 		
 		//When space is pressed the ball is released
@@ -354,6 +353,7 @@ package screens
 			//Hardcoded country due to no user input support (problem not clear)
 			trace("sending score");
 			userName = welcome.getPlayerName();
+			trace(playerScore);
 			country.text = "GB";
 			var header:URLRequestHeader = new URLRequestHeader("token", "NG$c0#f5H9EL~_o");
 			var url:String = 
@@ -401,8 +401,8 @@ package screens
 			var loader:URLLoader = URLLoader(event.target);
 			trace("completeHandler: " + loader.data);
 			
-			var info:Object = JSON.parse(loader.data);
-			trace("username is: " + info["leaderboardData"][0]["Username"]);
+			//var info:Object = JSON.parse(loader.data);
+			//trace("username is: " + info["leaderboardData"][0]["Username"]);
 		}
 		
 		private function openHandler(event:flash.events.Event):void {
@@ -433,30 +433,23 @@ package screens
 		
 		private function sendPlayerPosition():void
 		{
-			var playerXData:String = player.x.toString();
 			var playerYData:String = player.y.toString();
 			
 			//Attempting to send player position to server
-			socket.writeUTFBytes("Player x: ");
-			socket.writeUTFBytes(playerXData);
-			socket.writeUTFBytes("\n");
-			socket.flush();
 			
-			socket.writeUTFBytes("Player y: ");
-			socket.writeUTFBytes(playerXData);
+			/*socket.writeUTFBytes("Player y: ");
+			socket.writeUTFBytes(playerYData);
 			socket.writeUTFBytes("\n");
-			socket.flush();
+			socket.flush();*/
 		}
 		
 		private function sendBallPosition():void
 		{
-			trace("getBallPosition function called");
-
 			var ballXPosition:String = ball.x.toString();
 			var ballYPosition:String = ball.y.toString();
 			
 			//Attempting to send player position to server
-			socket.writeUTFBytes("Ball x: ");
+			/*socket.writeUTFBytes("Ball x: ");
 			socket.writeUTFBytes(ballXPosition);
 			socket.writeUTFBytes("\n");
 			socket.flush();
@@ -464,20 +457,18 @@ package screens
 			socket.writeUTFBytes("Ball y: ");
 			socket.writeUTFBytes(ballYPosition);
 			socket.writeUTFBytes("\n");
-			socket.flush();
+			socket.flush();*/
 					
 		}
 		
 		private function sendPlayerScore():void
-		{
-			trace("getBallPosition function called");
-			
+		{			
 			var playerScoreData:String = playerScore.toString();
 			
 			socket.writeUTFBytes("Player scored! Player score: ");
 			socket.writeUTFBytes(playerScoreData);
 			socket.writeUTFBytes("\n");
-			socket.flush();			
+			socket.flush();		
 		}
 		
 		private function sendPCScore():void

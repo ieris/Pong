@@ -22,7 +22,7 @@ package screens
 		public var name1Button:Button;
 		public var name2Button:Button;
 		public var name3Button:Button;
-		public var userName:TextField = new TextField(0, 0, "");
+		static public var userName:TextField = new TextField(0, 0, "");
 		private var notification:TextField = new TextField(1000, 200, "HELLO");
 		public var nameSelected:int = 0;
 		private var logInCount:int = 0;

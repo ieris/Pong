@@ -308,10 +308,10 @@ package screens
 			this.addChild(country6);
 			
 			country7.x = 1960;
-			country8.y = 900;
-			country8.fontSize = 20;
-			country8.color = 0xffffff;
-			this.addChild(country8);
+			country7.y = 900;
+			country7.fontSize = 20;
+			country7.color = 0xffffff;
+			this.addChild(country7);
 			
 			country8.x = 1960;
 			country8.y = 1000;

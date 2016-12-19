@@ -66,12 +66,20 @@ package
 					break;
 				case "leaderboard":
 					this.removeChild(screenWelcome);
+					this.removeChild(screenOptions);
+					this.removeChild(screenMultiplayer);
+					this.removeChild(screenSingleplayer);
+					this.removeChild(screenGameover);
 					screenLeaderboard = new Leaderboard();
 					this.addChild(screenLeaderboard);
 					break;
 				case "options":
 					this.removeChild(screenWelcome);
 					this.removeChild(screenOptions);
+					this.removeChild(screenLeaderboard);
+					this.removeChild(screenMultiplayer);
+					this.removeChild(screenSingleplayer);
+					this.removeChild(screenGameover);
 					screenOptions = new Options();
 					this.addChild(screenOptions);
 					break;
